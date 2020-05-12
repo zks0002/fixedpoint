@@ -678,12 +678,9 @@ class FixedPoint:
 
     # For future reference, in case division is needed:
     # https://courses.cs.washington.edu/courses/cse467/08au/labs/l5/fp.pdf
-    __floordiv__ = __rfloordiv__ = __ifloordiv__ = __unsupported
     __truediv__ = __rtruediv__ = __itruediv__ = __unsupported
     __matmul__ = __rmatmul__ = __imatmul__ = __unsupported
-    __mod__ = __rmod__ = __imod__ = __unsupported
     __rlshift__ = __rrshift__ = __unsupported
-    __divmod__ = __rdivmod__ = __unsupported
     __rpow__ = __unsupported
 
     def __to_FixedPoint(self: FixedPointType, num: Numeric,
@@ -720,11 +717,10 @@ class FixedPoint:
             augend.n, addend.n = n, n
 
             # Sum some
-            bits: int = (2**(m + n) - 1) & \
-                (augend._posweight() + addend._posweight() +
-                 augend._negweight() + addend._negweight())
+            bits = augend._posweight() + addend._posweight()
+            bits += augend._negweight() + addend._negweight()
 
-        return bits, signed, m, n
+        return bits & (2**(m + n) - 1), signed, m, n
 
     def __add__(self: FixedPointType, other: Numeric) -> FixedPointType:
         """Full precision addition operator."""
@@ -753,8 +749,8 @@ class FixedPoint:
             minuend._signed, subtrahend._signed = signed, signed
 
             # Subtract some
-            bits: int = minuend._posweight() + minuend._negweight() \
-                - subtrahend._posweight() - subtrahend._negweight()
+            bits = minuend._posweight() + minuend._negweight()
+            bits -= subtrahend._posweight() + subtrahend._negweight()
 
         # Check overflow condition
         if not signed and bits < 0:
@@ -813,6 +809,107 @@ class FixedPoint:
         other = self.__to_FixedPoint(multiplier)
         self._bits, self._signed, self._m, self._n = self.__mul(other)
         return self
+
+    def __floordiv(dividend: FixedPointType,
+                   divisor: FixedPointType) -> AttrReturn:
+        """Perform floor division and return attributes of the result."""
+        signed = dividend._signed or divisor._signed
+        m = dividend._m + divisor._n
+        n = max(dividend._n, divisor._n)
+        bits = dividend._signedint << (n - dividend._n)
+        bits //= divisor._signedint << (n - divisor._n)
+        bitmask = 2**(m + divisor._n) - 1
+        return (bits << divisor._n) & bitmask, signed, m, divisor._n
+
+    def __floordiv__(self: FixedPointType, other: Numeric) -> FixedPointType:
+        """Full precision floor division operator."""
+        divisor, props = self.__to_FixedPoint_resolved(other)
+        return self.__class__.__new(*self.__floordiv(divisor), **props)
+
+    def __rfloordiv__(self: FixedPointType,
+                      dividend: Numeric) -> FixedPointType:
+        """Full precision reflected floor division."""
+        other = self.__to_FixedPoint(dividend, self._signed)
+        return self.__class__.__new(*other.__floordiv(self),
+                                    self.overflow, self.rounding, self.str_base,
+                                    self.overflow_alert,
+                                    self.implicit_cast_alert,
+                                    self.mismatch_alert)
+
+    def __ifloordiv__(self: FixedPointType, divisor: Numeric) -> FixedPointType:
+        """Full precision augmented floor division operator."""
+        other = self.__to_FixedPoint(divisor, self._signed)
+        self._bits, self._signed, self._m, self._n = \
+            self.__floordiv(other)
+        return self
+
+    def __mod(dividend: FixedPointType,
+              divisor: FixedPointType) -> AttrReturn:
+        """Perform modulus and return attributes of result."""
+        signed = dividend._signed or divisor._signed
+        m = int(signed)
+        n = max(dividend._n, divisor._n)
+        bits = dividend._signedint << (n - dividend._n)
+        bits %= divisor._signedint << (n - divisor._n)
+        return bits & (2**(m + divisor._n) - 1), signed, m, divisor._n
+
+    def __mod__(self: FixedPointType, other: Numeric) -> FixedPointType:
+        """Full precision modulus operator."""
+        divisor, props = self.__to_FixedPoint_resolved(other)
+        return self.__class__.__new(*self.__mod(divisor), **props)
+
+    def __rmod__(self: FixedPointType,
+                 dividend: Numeric) -> FixedPointType:
+        """Full precision reflected floor division."""
+        other = self.__to_FixedPoint(dividend, self._signed)
+        return self.__class__.__new(*other.__mod(self),
+                                    self.overflow, self.rounding, self.str_base,
+                                    self.overflow_alert,
+                                    self.implicit_cast_alert,
+                                    self.mismatch_alert)
+
+    def __imod__(self: FixedPointType, divisor: Numeric) -> FixedPointType:
+        """Full precision augmented floor division operator."""
+        other = self.__to_FixedPoint(divisor, self._signed)
+        self._bits, self._signed, self._m, self._n = self.__mod(other)
+        return self
+
+    def __divmod(dividend: FixedPointType,
+                 divisor: FixedPointType) -> Tuple[AttrReturn, AttrReturn]:
+        """Full precision division and modulus operator."""
+        signed = dividend._signed or divisor._signed
+        md, mm = dividend._m + divisor._n, int(signed)
+        n = max(dividend._n, divisor._n)
+        bits = dividend._signedint << (n - dividend._n)
+        bitsd = bits // (denom := divisor._signedint << (n - divisor._n))
+        bitsm = bits % denom
+        bitmaskd = 2**(md + divisor._n) - 1
+        return ((bitmaskd & (bitsd << divisor._n), signed, md, divisor._n),
+                (bitsm & (2**(mm + divisor._n) - 1), signed, mm, divisor._n))
+
+    def __divmod__(self: FixedPointType,
+                   other: Numeric) -> Tuple[FixedPointType, FixedPointType]:
+        """Full precision division and modulus operator."""
+        divisor, props = self.__to_FixedPoint_resolved(other)
+        attrdiv, attrmod = self.__divmod(divisor)
+        retdiv = self.__class__.__new(*attrdiv, **props)
+        retmod = self.__class__.__new(*attrmod, **props)
+        return retdiv, retmod
+
+    def __rdivmod__(self: FixedPointType,
+                    dividend: Numeric) -> Tuple[FixedPointType, FixedPointType]:
+        """Full precision reflected division and modulus operator."""
+        other = self.__to_FixedPoint(dividend, self._signed)
+        attrdiv, attrmod = other.__divmod(self)
+        retdiv = self.__class__.__new(*attrdiv, self.overflow, self.rounding,
+                                      self.str_base, self.overflow_alert,
+                                      self.implicit_cast_alert,
+                                      self.mismatch_alert)
+        retmod = self.__class__.__new(*attrmod, self.overflow, self.rounding,
+                                      self.str_base, self.overflow_alert,
+                                      self.implicit_cast_alert,
+                                      self.mismatch_alert)
+        return retdiv, retmod
 
     def __pow(self: FixedPointType, exponent: int) -> AttrReturn:
         """Perform exponentiation and return attributes of the result."""
