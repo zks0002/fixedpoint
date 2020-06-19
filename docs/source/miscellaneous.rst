@@ -95,7 +95,11 @@ The :mod:`fixedpoint` package is typed (see :pep:`484`) and supported by
 `mypy <https://mypy.readthedocs.io/en/stable/>`_,
 `PyCharm <https://www.jetbrains.com/pycharm/>`_, etc.
 
-Subclassing :class:`.FixedPoint` is also supported.
+*******************************************************************************
+Subclassing
+*******************************************************************************
+
+Subclassing :class:`.FixedPoint` is not recommended.
 
 *******************************************************************************
 Numpy Integration
