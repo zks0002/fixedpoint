@@ -59,14 +59,25 @@ Logging is also used for debug purposes.
         * *name* is *FP*
         * *level* defaults to *logging.CRITICAL*
 
+..  |appdirs| replace:: ``appdirs``
+..  _appdirs: https://pypi.org/project/appdirs/
+
 ..  data:: DEFAULT_FILE_HANDLER
 
     :type:
         logging.FileHandler
 
     :value:
-        * *filename* is set to *fixedpoint.log* located in the same directory
-          as the source code
+        * *filename* is set to *fixedpoint.log* located in the directory
+          generated using the |appdirs|_ module:
+
+          ``from fixedpoint import __version__``
+
+          ``appdirs.user_log_dir("fixedpoint", version=__version__)``
+
+          which provides an OS-agnostic way of generating application data
+          directories.
+
         * *mode* is set to *'w'*
         * *delay* is set to *True*, thus no file is generated (or overwritten)
           until logging is enabled with
