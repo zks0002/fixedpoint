@@ -6,6 +6,7 @@ import struct
 import re
 import sys
 import operator
+from math import ceil, log2
 
 from ..init import (
     uut,
@@ -302,13 +303,82 @@ def test_unsupported_operators():
         ('@=', operator.imatmul),
         ('/', operator.truediv),
         ('/=', operator.itruediv),
-        ('//', operator.floordiv),
-        ('//=', operator.ifloordiv),
         ('%', operator.mod),
         ('%=', operator.imod),
         ('divmod()', divmod),
     ]:
         yield unsupported_operator, *args
+
+
+@tools.setup(progress_bar=True)
+def test_floordiv():
+    """Verify //, //=
+    """
+    def divfloatgen():
+        """Generate floats such that the quotient won't lose precision."""
+        for nbit in tools.test_iterator():
+            ok = False
+            while not ok:
+                s1, s2 = random.randrange(2), random.randrange(2)
+                m1, m2 = random.randint(1, 52), random.randint(1, 52)
+                n1, n2 = random.randint(0, 52 - m1), random.randint(0, 52 - m2)
+                init1 = tools.random_float(s1, m1, n1, {})
+                init2 = tools.random_float(s2, m2, n2, {})
+                ok = uut.FixedPoint.min_m(init1) + uut.FixedPoint.min_n(init2) < 51
+
+            yield init1, init2
+
+    roundings = tuple(x.name for x in uut.properties.Rounding)
+    errmsg = r"integer division or modulo by zero"
+    for fnum, fden in divfloatgen():
+        rounding = random.choice(roundings)
+        num = uut.FixedPoint(fnum, rounding=rounding)
+        nnum = uut.FixedPoint(num)
+        m, n = num.m, num.n
+        den = uut.FixedPoint(fden, rounding=rounding)
+
+        if den.bits == 0:
+            with nose.tools.assert_raises_regex(ZeroDivisionError, errmsg):
+                num // den
+            with nose.tools.assert_raises_regex(ZeroDivisionError, errmsg):
+                num // fden
+            with nose.tools.assert_raises_regex(ZeroDivisionError, errmsg):
+                fnum // den
+            with nose.tools.assert_raises_regex(ZeroDivisionError, errmsg):
+                num //= den
+            with nose.tools.assert_raises_regex(ZeroDivisionError, errmsg):
+                num //= fden
+            continue
+
+        exp = uut.FixedPoint(fnum // fden, rounding=rounding)
+        # __floordiv__
+        nose.tools.assert_equal(num // den, exp, f"\n\n{num!r}\n\n{den!r}\n\n")
+
+        # __floordiv__ with implicit cast
+        nose.tools.assert_equal(num // fden, exp)
+
+        # __rfloordiv__
+        nose.tools.assert_equal(fnum // den, exp)
+
+        # __ifloordiv__
+        num //= den
+        nose.tools.assert_equal(num, exp)
+
+        # __ifloordiv__ with implicit cast
+        nnum //= fden
+        nose.tools.assert_equal(nnum, exp)
+
+        # Check bit widths
+        if fnum < 0 or fden < 0:
+            nose.tools.assert_equal(num.m, m + den.n + 1)
+            nose.tools.assert_equal(num.n, den.m + n)
+            nose.tools.assert_true(num.signed)
+        else:
+            nose.tools.assert_equal(num.m, m + den.n)
+            arg = 2**(den.m + n) - 2**(n - den.n)
+            nose.tools.assert_equal(num.n, ceil(log2(arg)))
+            nose.tools.assert_false(num.signed)
+
 
 @tools.setup(progress_bar=True)
 def test_power():

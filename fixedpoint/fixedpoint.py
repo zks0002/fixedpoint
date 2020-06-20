@@ -676,8 +676,6 @@ class FixedPoint:
         """Unsupported FixedPoint method."""
         return NotImplemented
 
-    # For future reference, in case division is needed:
-    # https://courses.cs.washington.edu/courses/cse467/08au/labs/l5/fp.pdf
     __truediv__ = __rtruediv__ = __itruediv__ = __unsupported
     __matmul__ = __rmatmul__ = __imatmul__ = __unsupported
     __rlshift__ = __rrshift__ = __unsupported
@@ -813,13 +811,19 @@ class FixedPoint:
     def __floordiv(dividend: FixedPointType,
                    divisor: FixedPointType) -> AttrReturn:
         """Perform floor division and return attributes of the result."""
-        signed = dividend._signed or divisor._signed
-        m = dividend._m + divisor._n
-        n = max(dividend._n, divisor._n)
-        bits = dividend._signedint << (n - dividend._n)
-        bits //= divisor._signedint << (n - divisor._n)
-        bitmask = 2**(m + divisor._n) - 1
-        return (bits << divisor._n) & bitmask, signed, m, divisor._n
+        # Determine the Q format of the quotient
+        # https://courses.cs.washington.edu/courses/cse467/08au/labs/l5/fp.pdf
+        n: int = divisor._m + dividend._n
+        if not (signed := dividend._signed or divisor._signed):
+            n = _ceil(_log2(2**n - 2**(dividend._n - divisor._n)))
+        m: int = dividend._m + divisor._n + int(signed)
+
+        # Align binary points and divide
+        nalign: int = max(divisor._n, dividend._n)
+        bits = dividend._signedint << (nalign - dividend._n)
+        bits //= divisor._signedint << (nalign - divisor._n)
+
+        return (bits << n) & (2**(m + n) - 1), signed, m, n
 
     def __floordiv__(self: FixedPointType, other: Numeric) -> FixedPointType:
         """Full precision floor division operator."""
@@ -829,7 +833,7 @@ class FixedPoint:
     def __rfloordiv__(self: FixedPointType,
                       dividend: Numeric) -> FixedPointType:
         """Full precision reflected floor division."""
-        other = self.__to_FixedPoint(dividend, self._signed)
+        other = self.__to_FixedPoint(dividend)
         return self.__class__.__new(*other.__floordiv(self),
                                     self.overflow, self.rounding, self.str_base,
                                     self.overflow_alert,
@@ -838,7 +842,7 @@ class FixedPoint:
 
     def __ifloordiv__(self: FixedPointType, divisor: Numeric) -> FixedPointType:
         """Full precision augmented floor division operator."""
-        other = self.__to_FixedPoint(divisor, self._signed)
+        other = self.__to_FixedPoint(divisor)
         self._bits, self._signed, self._m, self._n = \
             self.__floordiv(other)
         return self

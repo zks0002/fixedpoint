@@ -15,7 +15,6 @@ import traceback
 import subprocess
 import pathlib
 import re
-import traceback
 import struct
 import shlex
 import platform
