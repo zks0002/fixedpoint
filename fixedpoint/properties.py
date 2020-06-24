@@ -1,5 +1,5 @@
 """FixedPoint property validation and handling."""
-from enum import Enum
+from enum import Enum, auto
 from logging import ERROR, WARNING, DEBUG
 from typing import (Callable, ClassVar, Mapping, Tuple, Union, TYPE_CHECKING)
 
@@ -23,13 +23,14 @@ Alert = Enum('alert',  # type: ignore # (too many arguments)
              module=__name__, qualname="Alert")
 
 Overflow = Enum('overflow',  # type: ignore # (too many arguments)
-                {'clamp': 100, 'wrap': 101},
+                {'clamp': auto(), 'wrap': auto()},
                 module=__name__, qualname="Overflow")
 
 # This is especially ordered for signed numbers.
 Rounding = Enum('rounding',  # type: ignore # (too many arguments)
-                {'convergent': 200, 'nearest': 201, 'down': 202, 'in': 203,
-                 'out': 204, 'up': 205}, module=__name__, qualname="Rounding")
+                {'convergent': auto(), 'nearest': auto(), 'down': auto(),
+                 'in': auto(), 'out': auto(), 'up': auto()},
+                module=__name__, qualname="Rounding")
 
 Property = Union[StrBase, Alert, Overflow, Rounding]
 ResolvedProps = Mapping[str, Union[str, int]]

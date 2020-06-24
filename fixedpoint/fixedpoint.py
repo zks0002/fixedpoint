@@ -4,10 +4,10 @@ from math import log2 as _log2, ceil as _ceil
 import sys
 import operator
 from typing import (Any, Callable, cast, ClassVar, Dict, List, Literal,
-                    Mapping, overload, Tuple, Type, TypeVar, Union)
+                    Mapping, Optional, overload, Tuple, Type, TypeVar, Union)
 
 from fixedpoint.properties import (StrBase, StrConv, Alert, Overflow, Rounding,
-                                   ResolvedProps, PropertyResolver)
+                                   ResolvedProps, PropertyResolver, PROPERTIES)
 from fixedpoint.logging import WARNER, LOGGER
 from fixedpoint.json import DEFAULT_ENCODER, DEFAULT_DECODER
 
@@ -17,6 +17,7 @@ FixedPointType = TypeVar("FixedPointType", bound="FixedPoint")
 Numeric = Union[FixedPointType, int, float]
 Integral = Union[FixedPointType, int, bool]
 AttrReturn = Tuple[int, bool, int, int]
+OperatorCallback = Callable[[FixedPointType, FixedPointType], FixedPointType]
 _MAXEXPONENT = max(abs(sys.float_info.max_exp), abs(sys.float_info.min_exp))
 
 
@@ -137,8 +138,12 @@ class FixedPoint:
     __slots__ = ('_bits', '_signed', '_m', '_n', '_str_base', '_overflow',
                  '_rounding', '_overflow_alert', '_implicit_cast_alert',
                  '_mismatch_alert', '__id', '__cmstack', '__context')
-    _RESOLVE: ClassVar[PropertyResolver]  # Resolves properties for new objects
-    _SERIAL_NUMBER: ClassVar[int]  # Logging aid
+    CALLBACK: ClassVar[Dict[Union[Literal['/'],
+                                  Literal['@']],
+                            Optional[OperatorCallback]]] = {'/': None,
+                                                            '@': None}
+    _RESOLVE: ClassVar = PropertyResolver()
+    _SERIAL_NUMBER: ClassVar[int] = 0  # Logging aid
     _bits: int  # Raw bits of the fixed point number
     _signed: bool  # Signed or unsigned
     _m: int  # Integer bit width
@@ -160,15 +165,8 @@ class FixedPoint:
                 implicit_cast_alert: str = 'warning',
                 mismatch_alert: str = 'warning') -> FixedPointType:
         """Initialize class variables and generate instance."""
-        try:
-            cls._SERIAL_NUMBER += 1
-            cls._RESOLVE
-        except AttributeError:
-            cls._RESOLVE = PropertyResolver()
-            cls._SERIAL_NUMBER = 1
-        finally:
-            inst: FixedPointType = super().__new__(cls)
-
+        cls._SERIAL_NUMBER += 1
+        inst: FixedPointType = super().__new__(cls)
         return inst
 
     @classmethod
@@ -471,7 +469,6 @@ class FixedPoint:
 
         # Number of integer bits are growing, do sign extension.
         if (nintbits := nbits - self._m) > 0 and self._negweight():
-            shift = self._m + self._n
             self._bits |= (2**nintbits - 1) << (self._m + self._n)
 
         # Number of integer bits are shrinking, handle overflow
@@ -676,10 +673,7 @@ class FixedPoint:
         """Unsupported FixedPoint method."""
         return NotImplemented
 
-    __truediv__ = __rtruediv__ = __itruediv__ = __unsupported
-    __matmul__ = __rmatmul__ = __imatmul__ = __unsupported
-    __rlshift__ = __rrshift__ = __unsupported
-    __rpow__ = __unsupported
+    __rlshift__ = __rrshift__ = __rpow__ = __unsupported
 
     def __to_FixedPoint(self: FixedPointType, num: Numeric,
                         signed: bool = None) -> FixedPointType:
@@ -806,6 +800,34 @@ class FixedPoint:
         """Full precision augmented multiplication operator."""
         other = self.__to_FixedPoint(multiplier)
         self._bits, self._signed, self._m, self._n = self.__mul(other)
+        return self
+
+    def __truediv__(self: FixedPointType, other: Numeric) -> FixedPointType:
+        """User-defined true division operator."""
+        if (func := self.__class__.CALLBACK.get('/', None)) is None:
+            return NotImplemented
+        divisor, props = self.__to_FixedPoint_resolved(other)
+        return func(self, divisor)
+
+    def __rtruediv__(self: FixedPointType, other: Numeric) -> FixedPointType:
+        """User-defined true division operator."""
+        if (func := self.__class__.CALLBACK.get('/', None)) is None:
+            return NotImplemented
+        dividend = self.__to_FixedPoint(other)
+        for attr in PROPERTIES:
+            attribute = f"_{attr}"
+            setattr(dividend, attribute, getattr(self, attribute))
+        return func(dividend, self)
+
+    def __itruediv__(self: FixedPointType, other: Numeric) -> FixedPointType:
+        """User-defined true division operator."""
+        if (func := self.__class__.CALLBACK.get('/', None)) is None:
+            return NotImplemented
+        divisor, props = self.__to_FixedPoint_resolved(other)
+        newself = func(self, divisor)
+        for attr in self.__slots__:
+            if not attr.startswith('__'):
+                setattr(self, attr, getattr(newself, attr))
         return self
 
     def __floordiv(dividend: FixedPointType,
@@ -936,6 +958,34 @@ class FixedPoint:
     def __ipow__(self: FixedPointType, exponent: int) -> FixedPointType:
         """Full precision augmented exponentiation operator."""
         self._bits, self._signed, self._m, self._n = self.__pow(exponent)
+        return self
+
+    def __matmul__(self: FixedPointType, other: Numeric) -> FixedPointType:
+        """User-defined matrix multiplication operator."""
+        if (func := self.__class__.CALLBACK.get('@', None)) is None:
+            return NotImplemented
+        multiplier, props = self.__to_FixedPoint_resolved(other)
+        return func(self, multiplier)
+
+    def __rmatmul__(self: FixedPointType, other: Numeric) -> FixedPointType:
+        """User-defined matrix multiplication operator."""
+        if (func := self.__class__.CALLBACK.get('@', None)) is None:
+            return NotImplemented
+        multiplicand = self.__to_FixedPoint(other)
+        for attr in PROPERTIES:
+            attribute = f"_{attr}"
+            setattr(multiplicand, attribute, getattr(self, attribute))
+        return func(multiplicand, self)
+
+    def __imatmul__(self: FixedPointType, other: Numeric) -> FixedPointType:
+        """User-defined matrix multiplication operator."""
+        if (func := self.__class__.CALLBACK.get('@', None)) is None:
+            return NotImplemented
+        multiplier, props = self.__to_FixedPoint_resolved(other)
+        newself = func(self, multiplier)
+        for attr in self.__slots__:
+            if not attr.startswith('__'):
+                setattr(self, attr, getattr(newself, attr))
         return self
 
     def __bitshift(self: FixedPointType, nbits: int) -> int:

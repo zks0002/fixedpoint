@@ -303,9 +303,6 @@ def test_unsupported_operators():
         ('@=', operator.imatmul),
         ('/', operator.truediv),
         ('/=', operator.itruediv),
-        ('%', operator.mod),
-        ('%=', operator.imod),
-        ('divmod()', divmod),
     ]:
         yield unsupported_operator, *args
 
@@ -520,6 +517,73 @@ def test_divmod():
                 mismatch_alert=emod.mismatch_alert,
                 implicit_cast_alert=emod.implicit_cast_alert,
             )
+
+
+@nose.tools.with_setup(teardown=lambda: uut.FixedPoint.CALLBACK.update({'/': None}))
+@tools.setup(progress_bar=True)
+def test_callback_operators():
+    """Verify callback operators
+    """
+    def callback_operator(op, func):
+        """Verify callbacks can be configured
+        """
+        sys.stderr.write(f'\b\b\b\b\b\b {op}: ... ')
+
+        y = uut.FixedPoint(random.getrandbits(10))
+
+        errmsg = f"unsupported operand type\\(s\\) for {re.escape(op)}: %r and %r"
+
+        with nose.tools.assert_raises_regex(TypeError, errmsg % ('FixedPoint', 'FixedPoint')):
+            func(y, y)
+        with nose.tools.assert_raises_regex(TypeError, errmsg % ('FixedPoint', 'int')):
+            func(y, random.randint(-100, 100))
+        with nose.tools.assert_raises_regex(TypeError, errmsg % ('int', 'FixedPoint')):
+            func(random.randint(-100, 100), y)
+        with nose.tools.assert_raises_regex(TypeError, errmsg % ('float', 'FixedPoint')):
+            func(random.random() - 0.5, y)
+        with nose.tools.assert_raises_regex(TypeError, errmsg % ('FixedPoint', 'float')):
+            func(y, random.random() - 0.5)
+
+        for i, (a, b) in enumerate(zip(nondefault_props_gen(), nondefault_props_gen())):
+            x = uut.FixedPoint(a[0], *a[1], **a[2])
+            y = uut.FixedPoint(b[0], *b[1], **b[2])
+            x.mismatch_alert = 'ignore'
+            y.mismatch_alert = 'ignore'
+            uut.FixedPoint.CALLBACK[op[0]] = lambda left, right: uut.FixedPoint(i)
+            for result in (func(x, y),
+                           func(x, random.randint(-100, 100)),
+                           func(random.randint(-100, 100), x)):
+                tools.verify_attributes(result,
+                                        signed=False,
+                                        m=uut.FixedPoint.min_m(i) or 1,
+                                        n=0,
+                                        bits=i,
+                                        str_base=16,
+                                        rounding='nearest',
+                                        overflow='clamp',
+                                        overflow_alert='error',
+                                        mismatch_alert='warning',
+                                        implicit_cast_alert='warning')
+
+        uut.FixedPoint.CALLBACK[op[0]] = None
+        with nose.tools.assert_raises_regex(TypeError, errmsg % ('FixedPoint', 'FixedPoint')):
+            func(y, y)
+        with nose.tools.assert_raises_regex(TypeError, errmsg % ('FixedPoint', 'int')):
+            func(y, random.randint(-100, 100))
+        with nose.tools.assert_raises_regex(TypeError, errmsg % ('int', 'FixedPoint')):
+            func(random.randint(-100, 100), y)
+        with nose.tools.assert_raises_regex(TypeError, errmsg % ('float', 'FixedPoint')):
+            func(random.random() - 0.5, y)
+        with nose.tools.assert_raises_regex(TypeError, errmsg % ('FixedPoint', 'float')):
+            func(y, random.random() - 0.5)
+
+    for args in  [
+        ('/', operator.truediv),
+        ('/=', operator.itruediv),
+        ('@', operator.matmul),
+        ('@=', operator.imatmul),
+    ]:
+        yield callback_operator, *args
 
 
 @tools.setup(progress_bar=True)
