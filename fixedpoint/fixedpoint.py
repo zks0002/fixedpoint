@@ -805,24 +805,24 @@ class FixedPoint:
     def __truediv__(self: FixedPointType, other: Numeric) -> FixedPointType:
         """User-defined true division operator."""
         if (func := self.__class__.CALLBACK.get('/', None)) is None:
-            return NotImplemented
+            return NotImplemented  # type: ignore
         divisor, props = self.__to_FixedPoint_resolved(other)
-        return func(self, divisor)
+        return func(self, divisor)  # type: ignore
 
     def __rtruediv__(self: FixedPointType, other: Numeric) -> FixedPointType:
         """User-defined true division operator."""
         if (func := self.__class__.CALLBACK.get('/', None)) is None:
-            return NotImplemented
+            return NotImplemented  # type: ignore
         dividend = self.__to_FixedPoint(other)
         for attr in PROPERTIES:
             attribute = f"_{attr}"
             setattr(dividend, attribute, getattr(self, attribute))
-        return func(dividend, self)
+        return func(dividend, self)  # type: ignore
 
     def __itruediv__(self: FixedPointType, other: Numeric) -> FixedPointType:
         """User-defined true division operator."""
         if (func := self.__class__.CALLBACK.get('/', None)) is None:
-            return NotImplemented
+            return NotImplemented  # type: ignore
         divisor, props = self.__to_FixedPoint_resolved(other)
         newself = func(self, divisor)
         for attr in self.__slots__:
@@ -963,24 +963,24 @@ class FixedPoint:
     def __matmul__(self: FixedPointType, other: Numeric) -> FixedPointType:
         """User-defined matrix multiplication operator."""
         if (func := self.__class__.CALLBACK.get('@', None)) is None:
-            return NotImplemented
+            return NotImplemented  # type: ignore
         multiplier, props = self.__to_FixedPoint_resolved(other)
-        return func(self, multiplier)
+        return func(self, multiplier)  # type: ignore
 
     def __rmatmul__(self: FixedPointType, other: Numeric) -> FixedPointType:
         """User-defined matrix multiplication operator."""
         if (func := self.__class__.CALLBACK.get('@', None)) is None:
-            return NotImplemented
+            return NotImplemented  # type: ignore
         multiplicand = self.__to_FixedPoint(other)
         for attr in PROPERTIES:
             attribute = f"_{attr}"
             setattr(multiplicand, attribute, getattr(self, attribute))
-        return func(multiplicand, self)
+        return func(multiplicand, self)  # type: ignore
 
     def __imatmul__(self: FixedPointType, other: Numeric) -> FixedPointType:
         """User-defined matrix multiplication operator."""
         if (func := self.__class__.CALLBACK.get('@', None)) is None:
-            return NotImplemented
+            return NotImplemented  # type: ignore
         multiplier, props = self.__to_FixedPoint_resolved(other)
         newself = func(self, multiplier)
         for attr in self.__slots__:
