@@ -3,6 +3,10 @@ import sys
 import pathlib
 import logging
 
+import appdirs  # type: ignore
+
+from fixedpoint import __version__
+
 __all__ = ('LOGGER', 'DEFAULT_FILE_HANDLER', 'DEFAULT_FILE_HANDLER_FORMATTER',
            'WARNER', 'WARNER_CONSOLE_HANDLER', 'WARNER_FORMATTER')
 
@@ -12,8 +16,9 @@ LOGGER.setLevel(logging.CRITICAL)
 
 # This is the default file handler to be used unless a different handler is
 # specified when logging is enabled.
-logfile = pathlib.Path(__file__).parent / 'fixedpoint.log'
-DEFAULT_FILE_HANDLER = logging.FileHandler(logfile, 'w', None, True)
+_logdir = pathlib.Path(appdirs.user_log_dir("fixedpoint", version=__version__))
+DEFAULT_FILE_HANDLER = logging.FileHandler(_logdir / 'fixedpoint.log',
+                                           'w', None, True)
 DEFAULT_FILE_HANDLER.setLevel(logging.DEBUG)
 
 # This is the default file handler formatter unless a different formatter is

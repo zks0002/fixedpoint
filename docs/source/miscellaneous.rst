@@ -23,8 +23,8 @@ Warnings
         logging.StreamHandler
 
     :value:
-        * *stream* is set to `sys.stderr`
-        * *level* is set to *logging.DEBUG*.
+        - *stream* is set to `sys.stderr`
+        - *level* is set to *logging.DEBUG*.
 
 ..  data:: WARNER
 
@@ -32,8 +32,8 @@ Warnings
         logging.Logger
 
     :value:
-        * *name* is *FP.CONSOLE*
-        * *level* defaults to *logging.WARNING*
+        - *name* is *FP.CONSOLE*
+        - *level* defaults to *logging.WARNING*
 
     You can retrieve this logger with ``logging.getLogger("FP.CONSOLE")``.
 
@@ -56,8 +56,8 @@ Logging is also used for debug purposes.
         logging.Logger
 
     :value:
-        * *name* is *FP*
-        * *level* defaults to *logging.CRITICAL*
+        - *name* is *FP*
+        - *level* defaults to *logging.CRITICAL*
 
 ..  |appdirs| replace:: ``appdirs``
 ..  _appdirs: https://pypi.org/project/appdirs/
@@ -68,7 +68,7 @@ Logging is also used for debug purposes.
         logging.FileHandler
 
     :value:
-        * *filename* is set to *fixedpoint.log* located in the directory
+        - *filename* is set to *fixedpoint.log* located in the directory
           generated using the |appdirs|_ module:
 
           ``from fixedpoint import __version__``
@@ -78,11 +78,11 @@ Logging is also used for debug purposes.
           which provides an OS-agnostic way of generating application data
           directories.
 
-        * *mode* is set to *'w'*
-        * *delay* is set to *True*, thus no file is generated (or overwritten)
+        - *mode* is set to *'w'*
+        - *delay* is set to *True*, thus no file is generated (or overwritten)
           until logging is enabled with
           :meth:`fixedpoint.FixedPoint.enable_logging`
-        * *level* defaults to *logging.DEBUG*
+        - *level* defaults to *logging.DEBUG*
 
 The :data:`DEFAULT_FILE_HANDLER` is added to the :data:`LOGGER`.
 
