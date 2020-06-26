@@ -99,14 +99,14 @@ You can also rename a variable if desired.
         ...
     fixedpoint.FixedPointOverflowError: [SN3] Unsigned subtraction causes overflow.
 
-    >>> with x as xtmp, y as ytmp:
+    >>> with x as xtmp, y as ytmp: # Can use x, xtmp, y, and ytmp inside
     ...    xtmp.m, ytmp.m = 1, 1
     ...    xtmp.signed, ytmp.signed = 1, 1
-    ...    z = x - y
+    ...    z = x - y # z is created here
     ...    xtmp.qformat, ytmp.qformat, z.qformat
     ('Q1.54', 'Q1.52', 'Q2.54')
 
-    >>> x.qformat, y.qformat, z.qformat, float(round(z, 1))
+    >>> x.qformat, y.qformat, z.qformat, float(round(z, 1)) # z is available here
     ('UQ0.54', 'UQ0.52', 'Q2.54', -0.5)
 
 Context managers can be nested:
@@ -136,11 +136,13 @@ Context managers can be nested:
     5) x.rounding='in'
     6) x.rounding='nearest'
 
+..  _context_initialization:
+
 *******************************************************************************
 Context Initialization
 *******************************************************************************
 
-In addition to saving off the current context of `FixedPoint` objects, the
+In addition to saving off the current context of :class:`FixedPoint`\ s, the
 :pyref:`with statement <compound_stmts.html#with>` can also initialize the new
 context for you. Given ``x``, ``y``, and ``z`` below,
 

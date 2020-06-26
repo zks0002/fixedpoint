@@ -19,24 +19,24 @@ String Conversion
 *******************************************************************************
 
 Calling ``str()`` on a :class:`FixedPoint` generates a decimal, binary, octal,
-or hexadecimal string based on the :attr:`.FixedPoint.bits`. The latter 3 of
-which are 0-padded (if necessary) to the bit length of the :class:`FixedPoint`
-number. No radix is included.
+or hexadecimal string of :attr:`.FixedPoint.bits` based on the
+:attr:`.FixedPoint.str_base`; the latter 3 of which are 0-padded (if necessary)
+to the bit length of the :class:`FixedPoint` number. No radix is included.
 
 ..  doctest:: str conversion
     :skipif: should_skip('str conversion')
 
-    >>> init = '0b11001'
-    >>> b = FixedPoint(init, 1, 3, 2, str_base=2)
+    >>> init = '0b011001'
+    >>> b = FixedPoint(init, 1, 4, 2, str_base=2)
     >>> str(b)
-    '11001'
-    >>> o = FixedPoint(init, 1, 3, 2, str_base=8)
+    '011001'
+    >>> o = FixedPoint(init, 1, 4, 2, str_base=8)
     >>> str(o)
     '31'
-    >>> d = FixedPoint(init, 1, 3, 2, str_base=10)
+    >>> d = FixedPoint(init, 1, 4, 2, str_base=10)
     >>> str(d)
     '25'
-    >>> h = FixedPoint(init, 1, 3, 2, str_base=16)
+    >>> h = FixedPoint(init, 1, 4, 2, str_base=16)
     >>> str(h)
     '19'
 
@@ -46,7 +46,7 @@ number. No radix is included.
 String Formatting
 *******************************************************************************
 
-..  include:: FixedPointclass.rst
+..  include:: FixedPoint.rst
     :start-after: STRING FORMATTING INCLUDE START
     :end-before: STRING FORMATTING INCLUDE END
 
@@ -139,7 +139,7 @@ Integer and Fractional Bits
 ===============================================================================
 
 Using the ``format_spec`` ``type`` ``'m'`` or ``'n'`` allows you
-to format the integer and fractional bits as an :class:`int`. Precede these
+to format the integer or fractional bits as an :class:`int`. Precede these
 ``type``\ s with other standard types like ``'b'``, ``'o'``, ``'d'``,
 ``'n'``, ``'x'``, or ``'X'``.
 

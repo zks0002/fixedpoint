@@ -5,15 +5,16 @@ Bit Slicing
 ..  currentmodule:: fixedpoint
 
 Sometimes you want to access only certain bits of a :class:`FixedPoint` number.
-The :attr:`.FixedPoint.bits` attribute returns a :class:`FixedPointBits` object,
-which is an :class:`int` that support square bracket access.
+The :attr:`.FixedPoint.bits` attribute returns a
+:class:`~fixedpoint.fixedpoint.FixedPointBits` object, which is an :class:`int`
+that support square bracket access.
 
 *******************************************************************************
 Bit Random Access
 *******************************************************************************
 
-One or more contiguous bits in the :class:`FixedPointBits` can be accessed
-with an :class:`int` or :class:`slice` key.
+One or more contiguous bits in the :class:`~fixedpoint.fixedpoint.FixedPointBits`
+can be accessed with an :class:`int` or :class:`slice` key.
 
 ..  _single_bit_slice:
 
@@ -63,7 +64,7 @@ are equal) without specifying a step results in an error.
 Multi-Bit Random Access
 ===============================================================================
 
-To access multiple bits at a time, :class:`slice`\ s are employed. Both
+To access multiple bits at a time, a :class:`slice`\ must be used. Both
 ascending and descending ranges are supported.
 
 ..  doctest:: multi-bit slicing
@@ -88,7 +89,7 @@ negative, the slice accesses the bits as if they were a :class:`str`.
     >>> x = FixedPoint(0b100_100_100_100)
     >>> x.bits[::3] # Get every 3rd bit starting from the first
     15
-    >>> bin(x.bits[:-6]) # Get the last 6 bits
+    >>> bin(x.bits[-5:]) # Get the last 5 bits
     '0b100100'
 
 ..  _bit_mapping:
@@ -97,8 +98,8 @@ negative, the slice accesses the bits as if they were a :class:`str`.
 Bit Mappings
 *******************************************************************************
 
-Common parts of the `FixedPoint` bit string are mapped to keys, specified as
-strings (like a :obj:`dict`).
+Common parts of the :class:`FixedPoint` bit string are mapped to keys, specified
+as strings.
 
 These include:
 

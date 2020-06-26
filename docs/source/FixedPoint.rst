@@ -11,30 +11,30 @@ The **FixedPoint** Class
 
 ..  rubric:: Jump to Section
 
-* :ref:`Initialization Methods <FixedPoint_initialization>`
-* :ref:`FixedPoint Properties <FixedPoint_properties_rw>`
+- :ref:`Initialization Methods <FixedPoint_initialization>`
+- :ref:`FixedPoint Properties <FixedPoint_properties_rw>`
 
-  * :ref:`Read/Write Properties <FixedPoint_properties_rw>`
-  * :ref:`Read Only Properties <FixedPoint_properties_r>`
+  - :ref:`Read/Write Properties <FixedPoint_properties_rw>`
+  - :ref:`Read Only Properties <FixedPoint_properties_r>`
 
-* :ref:`Operators <FixedPoint_arithmeticoperators>`
+- :ref:`Operators <FixedPoint_arithmeticoperators>`
 
-  * :ref:`Binary Operators <FixedPoint_arithmeticoperators>`
-  * :ref:`Comparison Operators <FixedPoint_comparisonoperators>`
-  * :ref:`Bitwise Operators <FixedPoint_bitwiseoperators>`
-  * :ref:`Unary Operators <FixedPoint_unaryoperators>`
+  - :ref:`Binary Operators <FixedPoint_arithmeticoperators>`
+  - :ref:`Comparison Operators <FixedPoint_comparisonoperators>`
+  - :ref:`Bitwise Operators <FixedPoint_bitwiseoperators>`
+  - :ref:`Unary Operators <FixedPoint_unaryoperators>`
 
-* :ref:`Built-in Function Support <FixedPoint_builtinfunctions>`
-* :ref:`Bit Resizing Methods <FixedPoint_bitresizing>`
+- :ref:`Built-in Function Support <FixedPoint_builtinfunctions>`
+- :ref:`Bit Resizing Methods <FixedPoint_bitresizing>`
 
-  * :ref:`Rounding Methods <FixedPoint_roundingmethods>`
-  * :ref:`Overflow Handling Methods <FixedPoint_overflowhandling>`
+  - :ref:`Rounding Methods <FixedPoint_roundingmethods>`
+  - :ref:`Overflow Handling Methods <FixedPoint_overflowhandling>`
 
-* :ref:`Context Management <FixedPoint_contextmanagement>`
-* :ref:`Logging <FixedPoint_logging>`
-* :ref:`Utility Functions <FixedPoint_utils>`
-* :ref:`Property Resolution <property_resolution_order>`
-* :ref:`Bit Random Access <FixedPoint_slicingandmapping>`
+- :ref:`Context Management <FixedPoint_contextmanagement>`
+- :ref:`Logging <FixedPoint_logging>`
+- :ref:`Utility Functions <FixedPoint_utils>`
+- :ref:`Property Resolution <property_resolution_order>`
+- :ref:`Bit Random Access <FixedPoint_slicingandmapping>`
 
 ..  _FixedPoint_initialization:
 
@@ -60,97 +60,98 @@ The **FixedPoint** Class
 
     :param bool signed:
         Signedness, part of the :ref:`Q format <Q_Format>` specification. When
-        left unspecified, :meth:`sign` is used to deduce signedness. This
-        argument can be keyworded.
+        left unspecified, the :meth:`FixedPoint.sign` class method is used to
+        deduce signedness. This argument can be keyworded.
 
     :param int m:
         Number of integer bits, part of the :ref:`Q format <Q_Format>`
-        specification. When left unspecified, :meth:`min_m` is used to
-        deduce initial integer bit width, after which :meth:`~.FixedPoint.trim`
-        is used after rounding to minimize integer bits. This argument can be
-        keyworded.
+        specification. When left unspecified, the :meth:`FixedPoint.min_m` class
+        method is used to deduce initial integer bit width, after which
+        :meth:`FixedPoint.trim` is used after rounding to minimize integer bits.
+        This argument can be keyworded.
 
     :param int n:
         Number of fractional bits, part of the :ref:`Q format <Q_Format>`
-        specification. When left unspecified, :meth:`min_n` is used to deduce
-        fractional bit width. This argument can be keyworded.
+        specification. When left unspecified, the :meth:`FixedPoint.min_n` class
+        method is used to deduce fractional bit width. This argument can be
+        keyworded.
 
     :keyword str overflow:
-        Specifies what shall happen when the value :ref:`overflows <overflow>`
+        Specifies what shall happen when **init** :ref:`overflows <overflow>`
         its integer bit width. Valid options are:
 
-            * ``'clamp'`` (default when left unspecified)
-            * ``'wrap'``
+            - ``'clamp'`` (default when left unspecified)
+            - ``'wrap'``
 
     :keyword str rounding:
         Specifies how superfluous fractional bits are :ref:`rounded <rounding>`
         away. Valid options are:
 
-            * ``'convergent'`` (default for signed when left unspecified)
-            * ``'nearest'`` (default for unsigned when left unspecified)
-            * ``'in'``
-            * ``'out'``
-            * ``'up'``
-            * ``'down'``
+            - ``'convergent'`` (default for signed when left unspecified)
+            - ``'nearest'`` (default for unsigned when left unspecified)
+            - ``'in'``
+            - ``'out'``
+            - ``'up'``
+            - ``'down'``
 
     :keyword str overflow_alert:
         Specifies the :ref:`notification scheme when overflow occurs
         <overflow_alert>`. Valid options are:
 
-            * ``'error'`` (default when left unspecified)
-            * ``'warning'``
-            * ``'ignore'``
+            - ``'error'`` (default when left unspecified)
+            - ``'warning'``
+            - ``'ignore'``
 
     :keyword str mismatch_alert:
         Specifies the :ref:`notification scheme when 2 FixedPoints with
         non-matching properties undergo arithmetic <mismatch_alert>`. Valid
         options are:
 
-            * ``'error'``
-            * ``'warning'`` (default when left unspecified)
-            * ``'ignore'``
+            - ``'error'``
+            - ``'warning'`` (default when left unspecified)
+            - ``'ignore'``
 
     :keyword str implicit_cast_alert:
         Specifies the :ref:`notification scheme when implicit casting is
         performed <implicit_cast_alert>` and the resultant *FixedPoint* is not
         valued the same as the original number. Valid options are:
 
-            * ``'error'``
-            * ``'warning'`` (default when left unspecified)
-            * ``'ignore'``
+            - ``'error'``
+            - ``'warning'`` (default when left unspecified)
+            - ``'ignore'``
 
     :keyword int str_base:
         Casting a *FixedPoint* to a *str* generates a bit string in the
-        base specified by *str_base*. Valid options are:
+        base specified by **str_base**. Valid options are:
 
-            * ``16`` (default when left unspecified)
-            * ``10``
-            * ``8``
-            * ``2``
+            - ``16`` (default when left unspecified)
+            - ``10``
+            - ``8``
+            - ``2``
 
     :raises ValueError:
-        * if *init* is a *str* and any of *signed*, *m*, or *n* are not
+        - if **init** is a *str* and any of **signed**, **m**, or **n** are not
           specified.
-        * if more than *m* + *n* bits are present in *init* (when *init* is a
-          *str*).
-        * if an :ref:`invalid Q format <Q_Format>` is specified.
+        - if more than **m** + **n** bits are present in **init** (when **init**
+          is a *str*).
+        - if an :ref:`invalid Q format <Q_Format>` is specified.
 
     :raises TypeError:
-        if *init* is not an *int*, *float*, *str*, or *FixedPoint* and
+        if **init** is not an *int*, *float*, *str*, or *FixedPoint* and
         cannot be cast to a *float*.
 
     :raises FixedPointOverflowError:
-        if *overflow_alert* is ``'error'`` and *m* is too small to
-        represent *init*.
+        if **overflow_alert** is ``'error'`` and **m** is too small to
+        represent **init**.
 
     ..  admonition:: Jump to Examples
         :class: example
 
-        * :ref:`init_float`
-        * :ref:`init_int`
-        * :ref:`init_str`
-        * :ref:`init_fixedpoint`
-        * :ref:`initialize_from_other_types`
+        - :ref:`init_float`
+        - :ref:`init_int`
+        - :ref:`init_str`
+        - :ref:`init_fixedpoint`
+        - :ref:`initialize_from_other_types`
 
     ..  method:: from_int(val)
 
@@ -158,14 +159,14 @@ The **FixedPoint** Class
             Value to set the :class:`FixedPoint` to.
 
         Set the value of the :class:`FixedPoint` from an integer value. Affects
-        only integer bits (since integer require no fractional bits). Must fit
+        only integer bits (since integers require no fractional bits). Must fit
         into the :ref:`Q format <Q_Format>` already designated by the object,
         otherwise :ref:`overflow` will occur.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`initializers`
+            - :ref:`initializers`
 
     ..  method:: from_float(val)
 
@@ -179,7 +180,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`initializers`
+            - :ref:`initializers`
 
     ..  method:: from_string(val)
                  from_str(val)
@@ -195,7 +196,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`initializers`
+            - :ref:`initializers`
 
     ..  _FixedPoint_properties_rw:
 
@@ -265,7 +266,7 @@ The **FixedPoint** Class
             ``'error'``).
 
         :raises ValueError:
-            :ref:`Invalid Q format <Q_Format>`
+            Invalid :ref:`Q format <Q_Format>`
 
         When the number of fractional bits increases, 0s are appended to the
         fixed point number. When the number of fractional bits decreases,
@@ -285,20 +286,20 @@ The **FixedPoint** Class
         :setter:
             Set the base of the string generated by :class:`str`.
 
-        Using the builtin python :class:`str` function on a :class:`FixedPoint`
-        casts the object to a string. The string is the bits of the
-        :class:`FixedPoint` number in the base specified by
-        :attr:`~.FixedPoint.str_base`, but without the radix. Must be one of:
+        Casting a :class:`FixedPoint` to a :class:`str` will generate a string
+        representing the bits of the :class:`FixedPoint` number. The
+        :attr:`~.FixedPoint.str_base` property specifies if the bits are of
+        hexadecimal, decimal, octal, or binary format. Must be one of:
 
-        * 16
-        * 10
-        * 8
-        * 2
+        - ``16``
+        - ``10``
+        - ``8``
+        - ``2``
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`str_base`
+            - :ref:`str_base`
 
     ..  attribute:: overflow
 
@@ -316,13 +317,13 @@ The **FixedPoint** Class
         (:attr:`~.FixedPoint.m`). The :attr:`~.FixedPoint.overflow` property of
         a :class:`FixedPoint` specifies how to handle overflow. Must be one of:
 
-        * ``'clamp'``
-        * ``'wrap'``
+        - ``'clamp'``
+        - ``'wrap'``
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`overflow`
+            - :ref:`overflow`
 
     ..  attribute:: rounding
 
@@ -335,21 +336,21 @@ The **FixedPoint** Class
         :setter:
             Set the :attr:`~.FixedPoint.rounding` scheme.
 
-        Rounding occurs when fractional bits must be removed from the object.
-        Some rounding schemes can cause overflow in certain circumstances. Must
-        be one of:
+        Rounding occurs when fractional bits must be removed from the number.
+        Some rounding schemes can cause overflow in :ref:`certain circumstances
+        <rounding_induced_overflow>`. Must be one of:
 
-        * ``'convergent'``
-        * ``'nearest'``
-        * ``'in'``
-        * ``'out'``
-        * ``'up'``
-        * ``'down'``
+        - ``'convergent'``
+        - ``'nearest'``
+        - ``'in'``
+        - ``'out'``
+        - ``'up'``
+        - ``'down'``
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`rounding`
+            - :ref:`rounding`
 
     ..  attribute:: overflow_alert
 
@@ -365,14 +366,14 @@ The **FixedPoint** Class
         When overflow occurs, the :attr:`~.FixedPoint.overflow_alert` property
         indicates how you are notified. Must be one of:
 
-        * ``'error'``
-        * ``'warning'``
-        * ``'ignore'``
+        - ``'error'``
+        - ``'warning'``
+        - ``'ignore'``
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`overflow_alert`
+            - :ref:`overflow_alert`
 
     ..  attribute:: mismatch_alert
 
@@ -391,14 +392,14 @@ The **FixedPoint** Class
         2 objects do not match, the :attr:`~.FixedPoint.mismatch_alert` property
         indicates how you are notified. Must be one of:
 
-        * ``'warning'``
-        * ``'error'``
-        * ``'ignore'``
+        - ``'warning'``
+        - ``'error'``
+        - ``'ignore'``
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`mismatch_alert`
+            - :ref:`mismatch_alert`
 
     ..  attribute:: implicit_cast_alert
 
@@ -418,14 +419,14 @@ The **FixedPoint** Class
         :class:`FixedPoint`, the :attr:`~.FixedPoint.implicit_cast_alert`
         property indicates how you are notified. Must be one of:
 
-        * ``'warning'``
-        * ``'error'``
-        * ``'ignore'``
+        - ``'warning'``
+        - ``'error'``
+        - ``'ignore'``
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`implicit_cast_alert`
+            - :ref:`implicit_cast_alert`
 
     ..  |FixedPointBitsType| replace:: *FixedPointBits*
     ..  _FixedPointBitsType: :ref:`FixedPointBits <FixedPoint_slicingandmapping>`
@@ -440,18 +441,18 @@ The **FixedPoint** Class
         :getter:
             Bits of the fixed point number.
 
-        This is the read-only bits of the :class:`FixedPoint`, stored as an
-        integer.
+        This is the read-only bits of the :class:`FixedPoint`, stored as a
+        positive integer.
 
         Indexing, slicing, and mapping is available with the
-        :class:`FixedPointBits` class.
+        :class:`~fixedpoint.fixedpoint.FixedPointBits` class.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`single_bit_slice`
-            * :ref:`multi_bit_slice`
-            * :ref:`bit_mapping`
+            - :ref:`single_bit_slice`
+            - :ref:`multi_bit_slice`
+            - :ref:`bit_mapping`
 
     ..  attribute:: bitmask
 
@@ -470,7 +471,8 @@ The **FixedPoint** Class
 
         :getter:
             *True* if the value of the :class:`FixedPoint` number is
-            equal to it minimum or maximum value. *False* otherwise.
+            equal to it minimum or maximum :ref:`representable value <range>`.
+            *False* otherwise.
 
     ..  attribute:: qformat
 
@@ -482,13 +484,17 @@ The **FixedPoint** Class
 
         The string takes the form **UQm.n**, where:
 
-        * **U** is only present for unsigned numbers
-        * **m** is the number of integer bits
-        * **n** is the number of fractional bits
+        - **U** is only present for unsigned numbers
+        - **m** is the number of integer bits
+        - **n** is the number of fractional bits
 
     ..  _FixedPoint_arithmeticoperators:
 
     ..  rubric:: Arithmetic Operators
+
+    ..  todo::
+
+        Add appropriate operators here.
 
     ..  method:: __add__(augend)
                  __iadd__(augned)
@@ -498,7 +504,7 @@ The **FixedPoint** Class
 
             These are the ``+`` and ``+=`` operators.
 
-        :param addend:
+    :param addend:
             addition term
 
         :type addend:
@@ -511,19 +517,20 @@ The **FixedPoint** Class
             FixedPoint or int or float
 
         :return:
-            *Sum* of *addend* and *augend*
+            *sum* of **addend** and **augend**
 
         :rtype:
             FixedPoint
 
         :raises ImplicitCastError:
-            if the *addend* or *augend* argument cannot be cast to a
-            :class:`FixedPoint` without error.
+            if the **addend** or **augend** argument cannot be cast to a
+            :class:`FixedPoint` without error (raised only when
+            :attr:`~.FixedPoint.implicit_cast_alert` is ``'error'``).
 
         :raises MismatchError:
-            if any *addend* or *augend* properties do not match, and either
-            of their :attr:`~.FixedPoint.mismatch_alert` properties is
-            ``'error'``.
+            if any properties between **addend** and **augend** do not match,
+            and either of their :attr:`~.FixedPoint.mismatch_alert` properties
+            is ``'error'``.
 
         ..  note::
 
@@ -532,13 +539,13 @@ The **FixedPoint** Class
         Addition using the ``+`` and ``+=`` operators are
         :ref:`full precision <arithmetic_addition>`; bit growth will occur:
 
-        If both *augend* or *addend* are unsigned, the result is unsigned,
+        If both **augend** or **addend** are unsigned, the result is unsigned,
         otherwise the result will be signed.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`arithmetic_addition`
+            - :ref:`arithmetic_addition`
 
     ..  method:: __sub__(subtrahend)
                  __isub__(subtrahend)
@@ -561,22 +568,23 @@ The **FixedPoint** Class
             FixedPoint or int or float
 
         :return:
-            *Difference* of *minuend* and *subtrahend*
+            *difference* of **minuend** and **subtrahend**
 
         :rtype:
             FixedPoint
 
         :raises ImplicitCastError:
-            if the *minuend* or *subtrahend* argument cannot be cast to a
-            :class:`FixedPoint` without error.
+            if the **minuend** or **subtrahend** argument cannot be cast to a
+            :class:`FixedPoint` without error (raised only when
+            :attr:`~.FixedPoint.implicit_cast_alert` is ``'error'``).
 
         :raises FixedPointOverflowError:
-            *Subtrahend* > *minuend* and both terms are unsigned.
+            **subtrahend** > **minuend** and both terms are unsigned.
 
         :raises MismatchError:
-            if any *minuend* or *subtrahend* properties do not match, and either
-            of their :attr:`~.FixedPoint.mismatch_alert` properties is
-            ``'error'``.
+            if any properties between **minuend** and **subtrahend** do not
+            match, and either of their :attr:`~.FixedPoint.mismatch_alert`
+            properties is ``'error'``.
 
         ..  note::
 
@@ -593,7 +601,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`arithmetic_subtraction`
+            - :ref:`arithmetic_subtraction`
 
     ..  method:: __mul__(multiplier)
                  __imul__(multiplier)
@@ -616,19 +624,20 @@ The **FixedPoint** Class
             FixedPoint or int or float
 
         :return:
-            *Product* of *multiplicand* and *multiplier*
+            *product* of **multiplicand** and **multiplier**
 
         :rtype:
             FixedPoint
 
         :raises ImplicitCastError:
-            if the *addend* or *augend* argument cannot be cast to a
-            :class:`FixedPoint` without error.
+            if the **multiplicand** or **multiplier** argument cannot be cast
+            to a :class:`FixedPoint` without error (raised only when
+            :attr:`~.FixedPoint.implicit_cast_alert` is ``'error'``).
 
         :raises MismatchError:
-            if any *multiplicand* or *multiplier* properties do not match, and
-            either of their :attr:`~.FixedPoint.mismatch_alert` properties is
-            ``'error'``.
+            if any properties between **multiplicand** and **multiplier** do
+            not match, and either of their :attr:`~.FixedPoint.mismatch_alert`
+            properties is ``'error'``.
 
         ..  note::
 
@@ -644,7 +653,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`arithmetic_multiplication`
+            - :ref:`arithmetic_multiplication`
 
     ..  method:: __pow__(exponent)
                  __ipow__(exponent)
@@ -677,7 +686,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`arithmetic_exponentiation`
+            - :ref:`arithmetic_exponentiation`
 
     ..  _FixedPoint_comparisonoperators:
 
@@ -696,7 +705,7 @@ The **FixedPoint** Class
             operators.
 
         :param other:
-            Numeric object to compare to
+            Number to compare to
 
         :type other:
             FixedPoint or int or float
@@ -710,21 +719,21 @@ The **FixedPoint** Class
     ..  method:: __cmp__(other)
 
         :param other:
-            Numeric object to compare to
+            Number to compare to
 
         :type other:
             FixedPoint or int or float
 
         :returns:
-            * a negative number if the object is < *other*
-            * 0 if the object == *other*
-            * a positive number if the object is > *other*
+            - a negative number if the object is < **other**
+            - 0 if the object == **other**
+            - a positive number if the object is > **other**
 
         :rtype:
             int
 
-        Generic comparison object. Not used for comparisons in python 3 but
-        used internally by all other comparisons.
+        Generic comparison method. Not used for comparisons in python 3 but
+        used internally by all other comparison methods.
 
     ..  _FixedPoint_bitwiseoperators:
 
@@ -744,18 +753,18 @@ The **FixedPoint** Class
             FixedPoint
 
         Bit shifting does not change the :class:`FixedPoint`\ 's
-        :ref:`Q format <Q_Format>`. The *nbits* leftmost bits are discarded.
+        :ref:`Q format <Q_Format>`. The **nbits** leftmost bits are discarded.
 
-        To keep bits after shifting, multiply the object by :math:`2^{nbits}`
-        instead of using the ``<<`` or ``<<=`` operator.
+        To keep bits after shifting, multiply the :class:`FixedPoint` by
+        :math:`2^{nbits}` instead of using the ``<<`` or ``<<=`` operator.
 
-        If *nbits* < 0, bits are shifted right using ``>>`` or ``>>=`` by
+        If **nbits** < 0, bits are shifted right using ``>>`` or ``>>=`` by
         ``abs(nbits)`` instead.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`left_shift`
+            - :ref:`left_shift`
 
     ..  method:: __rshift__(nbits)
                  __irshift__(nbits)
@@ -767,27 +776,24 @@ The **FixedPoint** Class
         :param int nbits:
             Number of bits to shift right.
 
-        :return:
-            Original :class:`FixedPoint` with bits shifted right.
-
         :rtype:
             FixedPoint
 
         Bit shifting does not change the :class:`FixedPoint`\ 's
-        :ref:`Q format <Q_Format>`. The *nbits* rightmost bits are discarded.
+        :ref:`Q format <Q_Format>`. The **nbits** rightmost bits are discarded.
 
-        To keep bits after shifting, multiply the object by :math:`2^{-nbits}`
-        instead of using the ``>>`` or ``>>=`` operator.
+        To keep bits after shifting, multiply the :class:`FixedPoint` by
+        :math:`2^{-nbits}` instead of using the ``>>`` or ``>>=`` operator.
 
         For signed numbers, sign extension occurs.
 
-        If *nbits* < 0, bits are shifted right using ``<<`` or ``<<=`` by
+        If **nbits** < 0, bits are shifted left using ``<<`` or ``<<=`` by
         ``abs(nbits)`` instead.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`right_shift`
+            - :ref:`right_shift`
 
     ..  method:: __and__(other)
                  __iand__(other)
@@ -803,9 +809,6 @@ The **FixedPoint** Class
         :type other:
             int or FixedPoint
 
-        :return:
-            Original object's bits bitwise ANDed with *other*'s bits.
-
         :rtype:
             FixedPoint
 
@@ -818,7 +821,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Bitwise ANDing <and_or_xor>`
+            - :ref:`Bitwise ANDing <and_or_xor>`
 
     ..  method:: __or__(other)
                  __ior__(other)
@@ -834,9 +837,6 @@ The **FixedPoint** Class
         :type other:
             int or FixedPoint
 
-        :return:
-            Original object's bits bitwise ORed with *other*'s bits.
-
         :rtype:
             FixedPoint
 
@@ -849,7 +849,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Bitwise ORing <and_or_xor>`
+            - :ref:`Bitwise ORing <and_or_xor>`
 
     ..  method:: __xor__(other)
                  __ixor__(other)
@@ -865,9 +865,6 @@ The **FixedPoint** Class
         :type other:
             int or FixedPoint
 
-        :return:
-            Original object's bits bitwise XORed with *other*'s bits.
-
         :rtype:
             FixedPoint
 
@@ -880,7 +877,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Bitwise XORing <and_or_xor>`
+            - :ref:`Bitwise XORing <and_or_xor>`
 
     ..  _FixedPoint_unaryoperators:
 
@@ -901,7 +898,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Bitwise Inversion <inversion>`
+            - :ref:`Bitwise Inversion <inversion>`
 
     ..  method:: __pos__()
 
@@ -941,7 +938,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Negation <negation_abs>`
+            - :ref:`Negation <negation_abs>`
 
     ..  _FixedPoint_builtinfunctions:
 
@@ -969,7 +966,7 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Absolute Value <negation_abs>`
+            - :ref:`Absolute Value <negation_abs>`
 
     ..  method:: __int__()
 
@@ -1062,12 +1059,10 @@ The **FixedPoint** Class
         This string represents the bits of the number, thus will always be
         non-negative.
 
-        Signedness does not change.
-
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`str_conversion`
+            - :ref:`str_conversion`
 
     ..  method:: __format__()
 
@@ -1146,13 +1141,13 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`string_formatting`
+            - :ref:`string_formatting`
 
     ..  method:: __len__()
 
         ..  note::
 
-            This is the built-in :func:`len` function..
+            This is the built-in :func:`len` function.
 
         :return:
             Number of bits in the :class:`FixedPoint`.
@@ -1164,9 +1159,9 @@ The **FixedPoint** Class
 
         ..  note::
 
-            This is the built-in :func:`repr` function, which is also the output
-            shown when a :class:`FixedPoint` is not assigned to a
-            variable.
+            This is the built-in :func:`repr` function, which is what's
+            displayed in the :pytut:`python interpreter <interpreter>` when a
+            :class:`FixedPoint` is not assigned to a variable.
 
         :return:
             Python executable code; a :class:`str` representation of the object.
@@ -1187,7 +1182,7 @@ The **FixedPoint** Class
             Number of integer bits to resize to.
 
         :param int n:
-            Number of fractional bits to resize to
+            Number of fractional bits to resize to.
 
         :param str rounding:
             Temporary :attr:`~.FixedPoint.rounding` scheme to use. Can be
@@ -1202,25 +1197,25 @@ The **FixedPoint** Class
             keyworded.
 
         :raises FixedPointOverflowError:
-            if resizing causes overflow (raised only if *alert* - or
-            :attr:`~.FixedPoint.overflow_alert` if *alert* is not specified -
+            if resizing causes overflow (raised only if **alert** - or
+            :attr:`~.FixedPoint.overflow_alert` if **alert** is not specified -
             is ``'error'``).
 
-        Fractional bits are resized first, them integer bits. Bit sizes can grow
+        Fractional bits are resized first, then integer bits. Bit sizes can grow
         or shrink from their current value.
 
         Rounding, overflow handling, and overflow alert notification severity
         can be temporarily modified within the scope of this method. I.e.,
         specifying the *rounding*, *overflow*, or *alert* arguments will only
         take effect within this method; it will not permanently change the
-        property settings of the object. If left unspecified, the current
-        property setting is used.
+        property settings of the :class:`FixedPoint` being modified. If left
+        unspecified, the current property setting is used.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Resize <resize>`
-            * :ref:`Resize uses the context manager <resize_implementation>`
+            - :ref:`Resize <resize>`
+            - :ref:`Resize uses the context manager <resize_implementation>`
 
     ..  method:: trim(ints=None, fracs=None)
 
@@ -1232,45 +1227,47 @@ The **FixedPoint** Class
 
         Trims off excess bits, including:
 
-        * up to :attr:`~.FixedPoint.n` trailing 0s
-        * for unsigned numbers:
+        - up to :attr:`~.FixedPoint.n` trailing 0s
+        - for unsigned numbers:
 
-          * up to :attr:`~.FixedPoint.m` leading 0s
+          - up to :attr:`~.FixedPoint.m` leading 0s
 
-        * for signed numbers:
+        - for signed numbers:
 
-          * up to :attr:`~.FixedPoint.m` - 1 leading 0s for positive numbers,
+          - up to :attr:`~.FixedPoint.m` - 1 leading 0s for positive numbers,
             leaving one leading 0 in front of the first 1 encountered
-          * up to :attr:`~.FixedPoint.m` - 1 leading 1s, for negative numbers,
+          - up to :attr:`~.FixedPoint.m` - 1 leading 1s, for negative numbers,
             leaving one leading 1 in front of the first 0 encountered
 
         Resultant :ref:`Q format <Q_Format>` is always valid. For the
         :class:`FixedPoint` value of 0, resulting Q format is *[U]Q1.0*.
 
         Opt to trim off only fractional bits or only integer bits by setting
-        *fracs* or *ints*, respectively, to *True*. When left unspecified,
+        **fracs** or **ints**, respectively, to *True*. When left unspecified,
         both integer and fractional bits are trimmed.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Trim <trim>`
+            - :ref:`Trim <trim>`
 
     ..  _FixedPoint_roundingmethods:
 
     ..  rubric:: Rounding Methods
 
-    ..  method:: __round__(n)
+    ..  method:: __round__(fp, n)
 
         ..  note::
 
-            This is the built-in :func:`round` function.
+            This is the built-in :func:`python:round` function. It does not
+            modify the object given to it, but creates a copy and operates on
+            it instead.
+
+        :param FixedPoint fp:
+            :class:`FixedPoint` to round
 
         :param int n:
             Number of bits remaining after round
-
-        :return:
-            A copy of the :class:`FixedPoint` rounded to *n* bits.
 
         :rtype:
             FixedPoint
@@ -1280,23 +1277,27 @@ The **FixedPoint** Class
             :attr:`~.FixedPoint.overflow_alert` property setting is
             ``'error'``).
 
-        Rounds a copy of the :class:`FixedPoint` using the rounding scheme
-        specified by the :attr:`~.FixedPoint.rounding` property setting.
-
-        Refer to :meth:`.FixedPoint.resize` for more details.
+        Rounds a copy of the :class:`FixedPoint` rounded to **n** fractional
+        bits using the rounding scheme specified by the
+        :attr:`~.FixedPoint.rounding` property setting. Differs from
+        :meth:`~.FixedPoint.round` in that it modifies a copy of the object,
+        whereas :meth:`~.FixedPoint.round` modifies the object directly.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Default Rounding <default_rounding>`
+            - :ref:`Default Rounding <default_rounding>`
 
-    ..  method:: __floor__()
+    ..  method:: __floor__(fp)
 
         ..  note::
 
             This is the built-in :func:`math.floor` function. It does not
             modify the object given to it, but creates a copy and operates on
             it instead.
+
+        :param FixedPoint fp:
+            :class:`FixedPoint` to round
 
         :rtype:
             FixedPoint
@@ -1307,9 +1308,9 @@ The **FixedPoint** Class
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`math.floor <floor>`
+            - :ref:`math.floor <floor>`
 
-    ..  method:: __ceil__()
+    ..  method:: __ceil__(fp)
 
         ..  note::
 
@@ -1317,24 +1318,27 @@ The **FixedPoint** Class
             modify the object given to it, but creates a copy and operates on
             it instead.
 
+        :param FixedPoint fp:
+            :class:`FixedPoint` to round
+
         :rtype:
             FixedPoint
 
-        :raisesFixedPointOverflowError:
+        :raises FixedPointOverflowError:
             if the integer value of the :class:`FixedPoint` is already at its
-            maximum possible value (raised only if
-            :attr:`~.FixedPoint.overflow_alert` is ``'error'``)
+            maximum possible value (raised only if the
+            :attr:`~.FixedPoint.overflow_alert` property setting is
+            ``'error'``).
 
-        Rounds to the integer closest to :math:`+\infty`, leaving 0 fractional
-        bits. For values other than 0, this requires :attr:`~.FixedPoint.m` to
-        be non-zero.
+        Rounds toward :math:`+\infty`, leaving 0 fractional bits. For values
+        other than 0, this requires :attr:`~.FixedPoint.m` to be non-zero.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`math.ceil <ceil>`
+            - :ref:`math.ceil <ceil>`
 
-    ..  method:: __trunc__()
+    ..  method:: __trunc__(fp)
 
         ..  note::
 
@@ -1342,17 +1346,20 @@ The **FixedPoint** Class
             modify the object given to it, but creates a copy and operates on
             it instead.
 
+        :param FixedPoint fp:
+            :class:`FixedPoint` to round
+
         :rtype:
             FixedPoint
 
-        Rounds to the integer closest to :math:`-\infty`, leaving 0
-        fractional bits. If :attr:`~.FixedPoint.m` is 0, it is changed to 1,
-        otherwise :attr:`~.FixedPoint.m` is not modified.
+        Rounds toward :math:`-\infty`, leaving 0 fractional bits.
+        If :attr:`~.FixedPoint.m` is 0, it is changed to 1, otherwise
+        :attr:`~.FixedPoint.m` is not modified.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`math.trunc <trunc>`
+            - :ref:`math.trunc <trunc>`
 
     ..  method:: round(n)
 
@@ -1360,11 +1367,14 @@ The **FixedPoint** Class
             Number of fractional bits remaining after rounding
 
         :raises FixedPointOverflowError:
-            if rounding causes overflow (raised only if
-            :attr:`~.FixedPoint.overflow_alert` is ``'error'``)
+            if rounding causes overflow (raised only if the
+            :attr:`~.FixedPoint.overflow_alert` property setting is
+            ``'error'``).
 
         Rounds the :class:`FixedPoint` using the rounding scheme specified by
-        the :attr:`~.FixedPoint.rounding` property setting.
+        the :attr:`~.FixedPoint.rounding` property setting. Differs from
+        :meth:`~.FixedPoint.__round__` in that it modifies the object, whereas
+        :meth:`~.FixedPoint.__round__` modifies a copy of the object.
 
     ..  method:: convergent(n)
                  round_convergent(n)
@@ -1373,17 +1383,18 @@ The **FixedPoint** Class
             Number of fractional bits remaining after rounding
 
         :raises FixedPointOverflowError:
-            if rounding causes overflow (raised only if
-            :attr:`~.FixedPoint.overflow_alert` is ``'error'``)
+            if rounding causes overflow (raised only if the
+            :attr:`~.FixedPoint.overflow_alert` property setting is
+            ``'error'``).
 
-        Rounds to *n* fractional bits, biased toward the nearest value with
+        Rounds to **n** fractional bits, biased toward the nearest value with
         ties rounding to the nearest even value.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Numerical examples from initialization <convergent>`
-            * :ref:`rounding_induced_overflow`
+            - :ref:`Numerical examples from initialization <convergent>`
+            - :ref:`rounding_induced_overflow`
 
     ..  method:: round_nearest(n)
 
@@ -1391,30 +1402,31 @@ The **FixedPoint** Class
             Number of fractional bits remaining after rounding
 
         :raises FixedPointOverflowError:
-            if rounding causes overflow (raised only if
-            :attr:`~.FixedPoint.overflow_alert` is ``'error'``)
+            if rounding causes overflow (raised only if the
+            :attr:`~.FixedPoint.overflow_alert` property setting is
+            ``'error'``).
 
-        Rounds the :class:`FixedPoint` to *n* fractional bits, biased toward the
-        nearest value with ties rounding to :math:`+\infty`.
+        Rounds the :class:`FixedPoint` to **n** fractional bits, biased toward
+        the nearest value with ties rounding to :math:`+\infty`.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Numerical examples from initialization <nearest>`
-            * :ref:`rounding_induced_overflow`
+            - :ref:`Numerical examples from initialization <nearest>`
+            - :ref:`rounding_induced_overflow`
 
     ..  method:: round_in(n)
 
         :param int n:
             Number of fractional bits remaining after rounding
 
-        Rounds the :class:`FixedPoint` to *n* fractional bits toward 0.
+        Rounds the :class:`FixedPoint` to **n** fractional bits toward 0.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Numerical examples from initialization <in>`
-            * :ref:`overflow_safe_rounding`
+            - :ref:`Numerical examples from initialization <in>`
+            - :ref:`overflow_safe_rounding`
 
     ..  method:: round_out(n)
 
@@ -1422,31 +1434,32 @@ The **FixedPoint** Class
             Number of fractional bits remaining after rounding
 
         :raises FixedPointOverflowError:
-            if rounding causes overflow (raised only if
-            :attr:`~.FixedPoint.overflow_alert` is ``'error'``)
+            if rounding causes overflow (raised only if the
+            :attr:`~.FixedPoint.overflow_alert` property setting is
+            ``'error'``).
 
-        Rounds the :class:`FixedPoint` to *n* fractional bits, biased toward the
-        nearest value with ties rounding away from 0.
+        Rounds the :class:`FixedPoint` to **n** fractional bits, biased toward
+        the nearest value with ties rounding away from 0.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Numerical examples from initialization <out>`
-            * :ref:`rounding_induced_overflow`
+            - :ref:`Numerical examples from initialization <out>`
+            - :ref:`rounding_induced_overflow`
 
     ..  method:: round_down(n)
 
         :param int n:
             Number of fractional bits remaining after rounding
 
-        Rounds the :class:`FixedPoint` to *n* fractional bits toward
+        Rounds the :class:`FixedPoint` to **n** fractional bits toward
         :math:`-\infty`.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Numerical examples from initialization <down>`
-            * :ref:`overflow_safe_rounding`
+            - :ref:`Numerical examples from initialization <down>`
+            - :ref:`overflow_safe_rounding`
 
     ..  method:: round_up(n)
 
@@ -1454,17 +1467,18 @@ The **FixedPoint** Class
             Number of fractional bits remaining after rounding
 
         :raises FixedPointOverflowError:
-            if rounding causes overflow (raised only if
-            :attr:`~.FixedPoint.overflow_alert` is ``'error'``)
+            if rounding causes overflow (raised only if the
+            :attr:`~.FixedPoint.overflow_alert` property setting is
+            ``'error'``).
 
-        Rounds the :class:`FixedPoint` to *n* fractional bits toward
+        Rounds the :class:`FixedPoint` to **n** fractional bits toward
         :math:`+\infty`.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Numerical examples from initialization <up>`
-            * :ref:`rounding_induced_overflow`
+            - :ref:`Numerical examples from initialization <up>`
+            - :ref:`rounding_induced_overflow`
 
     ..  method:: keep_msbs(m, n, /, rounding=None, overflow=None, alert=None)
 
@@ -1486,32 +1500,36 @@ The **FixedPoint** Class
             Temporary :attr:`~.FixedPoint.overflow_alert` scheme to use. Can be
             keyworded.
 
+        :raises ValueError:
+            if the specified :ref:`Q format <Q_Format>` is invalid
+
         :raises FixedPointOverflowError:
-            if rounding causes overflow (raised only if *alert* - or
-            :attr:`~.FixedPoint.overflow_alert` if *alert* is not specified -
+            if rounding causes overflow (raised only if **alert** - or
+            :attr:`~.FixedPoint.overflow_alert` if **alert** is not specified -
             is ``'error'``)
 
-        Rounds away LSb(s), leaving *m* + *n* bit(s), using the *rounding*
-        scheme specified, then interprets the result with *m* integer bits
-        and *n* fractional bits.
+        Rounds away LSb(s), leaving **m** + **n** total bit(s), using the
+        **rounding** scheme specified, then interprets the result with **m**
+        integer bits and **n** fractional bits.
 
         The rounding, overflow handling, and overflow alert notification schemes
         can be temporarily modified within the scope of this method. I.e.,
-        specifying the *rounding*, *overflow*, or *alert* arguments will only
-        take effect within this method; it will not permanently change the
-        property settings of the object. The current property setting for any
-        of these unspecified arguments is used.
+        specifying the **rounding**, **overflow**, or **alert** arguments will
+        only take effect within this method; it will not permanently change the
+        property settings of the object. Unspecified arguments default to their
+        current property setting.
 
         While other rounding functions cannot round beyond the fractional bits
         in a :class:`FixedPoint`, :meth:`~.FixedPoint.keep_msbs` will keep an
-        arbitrary number of the :class:`FixedPoint`\ 's most significant bits,
-        regardless of its current :ref:`Q format <Q_Format>`. The resulting
-        :ref:`Q format <Q_Format>` must be valid.
+        arbitrary number of the :class:`FixedPoint`\ 's most significant bits
+        (up to its current bit width), regardless of its current
+        :ref:`Q format <Q_Format>`. The resulting :ref:`Q format <Q_Format>`
+        must be valid.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`keep_msbs`
+            - :ref:`keep_msbs`
 
     ..  _FixedPoint_overflowhandling:
 
@@ -1522,56 +1540,56 @@ The **FixedPoint** Class
         :param int m:
             Number of integer bits remaining after clamping
 
-        :param str alart:
+        :param str alert:
             Temporary :attr:`~.FixedPoint.overflow_alert` scheme to use. Can be
             keyworded.
 
         :raises FixedPointOverflowError:
             if new integer bit width is too small to represent the
-            :class:`FixedPoint` object value (raised only if *alert* - or
-            :attr:`~.FixedPoint.overflow_alert` if *alert* is not specified -
+            :class:`FixedPoint` object value (raised only if **alert** - or
+            :attr:`~.FixedPoint.overflow_alert` if **alert** is not specified -
             is ``'error'``)
 
-        Reduces the number of integer bits in the :class:`FixedPoint` to *m*,
-        clamping to the minimum or maximum value on overflow.
+        Reduces the number of integer bits in the :class:`FixedPoint` to **m**,
+        clamping to the minimum/maximum value on underflow/overflow.
 
         The overflow alert notification scheme can be temporarily modified
-        within the scope of the method by using the *alert* argument. When
-        left unspecified, the :attr:`~.FixedPoint.overflow_alert` property
-        setting is used.
+        within the scope of the method by using the **alert** argument. When
+        left unspecified, the current :attr:`~.FixedPoint.overflow_alert`
+        property setting is used.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Numerical examples from initialization <clamp>`
+            - :ref:`Numerical examples from initialization <clamp>`
 
     ..  method:: wrap(m, /, alert=None)
 
         :param int m:
             Number of integer bits remaining after wrapping
 
-        :param str alart:
+        :param str alert:
             Temporary :attr:`~.FixedPoint.overflow_alert` scheme to use. Can be
             keyworded.
 
         :raises FixedPointOverflowError:
             if new integer bit width is too small to represent the
-            :class:`FixedPoint` object value (raised only if *alert* - or
-            :attr:`~.FixedPoint.overflow_alert` if *alert* is not specified -
+            :class:`FixedPoint` object value (raised only if **alert** - or
+            :attr:`~.FixedPoint.overflow_alert` if **alert** is not specified -
             is ``'error'``)
 
-        Reduces the number of integer bits in the :class:`FixedPoint` to *m*,
+        Reduces the number of integer bits in the :class:`FixedPoint` to **m**,
         masking away the removed integer bits.
 
         The overflow alert notification scheme can be temporarily modified
-        within the scope of the method by using the *alert* argument. When
-        left unspecified, the :attr:`~.FixedPoint.overflow_alert` property
-        setting is used.
+        within the scope of the method by using the **alert** argument. When
+        left unspecified, the current :attr:`~.FixedPoint.overflow_alert`
+        property setting is used.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`Numerical examples from initialization <wrap>`
+            - :ref:`Numerical examples from initialization <wrap>`
 
     ..  method:: keep_lsbs(m, n, /, overflow=None, alert=None)
 
@@ -1590,32 +1608,32 @@ The **FixedPoint** Class
             keyworded.
 
         :raises FixedPointOverflowError:
-            if new *m* + *n* bits is too small to represent the
-            :class:`FixedPoint` value (raised only if *alert* - or
-            :attr:`~.FixedPoint.overflow_alert` if *alert* is not specified -
+            if new **m** + **n** bit(s) is too small to represent the
+            :class:`FixedPoint` value (raised only if **alert** - or
+            :attr:`~.FixedPoint.overflow_alert` if **alert** is not specified -
             is ``'error'``)
 
-        Removes MSb(s), leaving *m* + *n* bit(s), using the *overflow*
-        scheme specified, then interprets the result with *m* integer bits
-        and *n* fractional bits.
+        Removes MSb(s), leaving **m** + **n** bit(s), using the **overflow**
+        scheme specified, then interprets the result with **m** integer bits
+        and **n** fractional bits.
 
         The overflow handling and overflow alert notification schemes can be
         temporarily modified within the scope of this method. I.e., specifying
-        the *overflow* or *alert* arguments will only take effect within this
-        method; it will not permanently change the property settings of the
-        object. The current property setting for any of these unspecified
-        arguments is used.
+        the **overflow** or **alert** arguments will only take effect within
+        this method; it will not permanently change the property settings of the
+        object. Unspecified arguments default to their current property setting.
 
         While other overflow handling functions cannot remove MSbs beyond their
         integer bits in a :class:`FixedPoint`, :meth:`~.FixedPoint.keep_lsbs`
         will keep an arbitrary number of the :class:`FixedPoint`\ 's least
-        significant bits, regardless of  its current :ref:`Q format <Q_Format>`.
-        The resulting :ref:`Q format <Q_Format>` must be valid.
+        significant bits (up to its current bit width), regardless of its
+        current :ref:`Q format <Q_Format>`. The resulting
+        :ref:`Q format <Q_Format>` must be valid.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :ref:`keep_lsbs`
+            - :ref:`keep_lsbs`
 
     ..  _FixedPoint_contextmanagement:
 
@@ -1633,22 +1651,22 @@ The **FixedPoint** Class
         :keyword bool safe_retain:
             Set to *True* to retain the changes made within the context as
             long as no exceptions were raised. Set to *False* (or leave
-            unspecified) if the the changes made within the context are to be
+            unspecified) if the changes made within the context are to be
             undone when the context exits.
 
         :keyword props:
             Any keyword-able argument from the :class:`FixedPoint` constructor,
             including:
 
-            * signed (*bool*)
-            * m (*int*)
-            * n (*int*)
-            * overflow (*str*)
-            * rounding (*str*)
-            * overflow_alert (*str*)
-            * mismatch_alert (*str*)
-            * implicit_cast_alert (*str*)
-            * str_base (*int*)
+            - signed (*bool*)
+            - m (*int*)
+            - n (*int*)
+            - overflow (*str*)
+            - rounding (*str*)
+            - overflow_alert (*str*)
+            - mismatch_alert (*str*)
+            - implicit_cast_alert (*str*)
+            - str_base (*int*)
 
         :raises AttributeError:
             if invalid keyword is specified
@@ -1658,18 +1676,16 @@ The **FixedPoint** Class
             specified
 
         While the ``__call__`` method is not typically associated with the
-        context manager, the :class:`FixedPoint` class uses this method to
-        assign attributes temporarily (or permanently, with appropriate use of
-        the *safe_retain* keyword) to the :class:`FixedPoint` called, within the
-        context of the :pyref:`with statement <compound_stmts.html#with>`.
+        context manager, the :class:`FixedPoint` class uses this method
+        for :ref:`context initialization <context_initialization>`.
 
-        Using the ``__call__`` method is optional when *safe_retain* does not
+        Using the ``__call__`` method is optional when **safe_retain** does not
         need to be *True*.
 
         ..  admonition:: Jump to Examples
             :class: example
 
-            * :doc:`context-management`
+            - :doc:`context-management`
 
     ..  _FixedPoint_logging:
 
@@ -1680,7 +1696,8 @@ The **FixedPoint** Class
 
         On initial import, logging is disabled.
 
-        Any time this method is called, *fixedpoint.log* is erased.
+        When this method is called the first time after import,
+        *fixedpoint.log* is erased.
 
     ..  staticmethod:: disable_logging()
 
@@ -1697,9 +1714,9 @@ The **FixedPoint** Class
             FixedPoint or int or float
 
         :return:
-            * -1 if *val* < 0
-            * +1 if *val* > 0
-            * 0 if *val* == 0
+            - -1 if **val** < 0
+            - +1 if **val** > 0
+            - 0 if **val** == 0
 
         :rtype:
             int
@@ -1718,15 +1735,16 @@ The **FixedPoint** Class
             *True* if signed, *False* if unsigned
 
         :return:
-            Minimum value for :attr:`.FixedPoint.m` for which *val* can be
+            Minimum value for :attr:`.FixedPoint.m` for which **val** can be
             represented without overflow.
 
         :rtype:
             int
 
-        Calculate the minimum value for :attr:`.FixedPoint.m` for which *va*
-        can be represented without overflow. If *signed* is not specified, it is
-        deduced from the value of *val*. When *val* < 0, *signed* is ignored.
+        Calculate the minimum value for :attr:`.FixedPoint.m` for which **val**
+        can be represented without overflow. If **signed** is not specified, it
+        is deduced from the value of **val**. When **val** < 0, **signed** is
+        ignored.
 
         Worst case rounding is assumed (e.g., ``min_m(3.25)`` returns 3, in case
         3.25 needs to be rounded up to 4).
@@ -1740,7 +1758,7 @@ The **FixedPoint** Class
             float
 
         :return:
-            Minimum value for :attr:`.FixedPoint.n` for which *val* can be
+            Minimum value for :attr:`.FixedPoint.n` for which **val** can be
             represented exactly.
 
         :rtype:

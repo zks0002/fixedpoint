@@ -23,8 +23,8 @@ Warnings
         logging.StreamHandler
 
     :value:
-        * *stream* is set to `sys.stderr`
-        * *level* is set to *logging.DEBUG*.
+        - **stream** is set to `sys.stderr`
+        - **level** is set to **logging.DEBUG**.
 
 ..  data:: WARNER
 
@@ -32,8 +32,8 @@ Warnings
         logging.Logger
 
     :value:
-        * *name* is *FP.CONSOLE*
-        * *level* defaults to *logging.WARNING*
+        - **name** is ``FP.CONSOLE``
+        - **level** defaults to **logging.WARNING**
 
     You can retrieve this logger with ``logging.getLogger("FP.CONSOLE")``.
 
@@ -42,7 +42,7 @@ The :data:`WARNER_CONSOLE_HANDLER` is added to :data:`WARNER`.
 Additionally, each :class:`~.fixedpoint.FixedPoint` object has a unique
 serial number associated with it that is available in the
 :class:`~logging.LogRecord` instance as the key **sn**. This is described in
-more detail :pylib:`here <logging.html#logging.Logger.debug>` as the *extra*
+more detail :pylib:`here <logging.html#logging.Logger.debug>` as the **extra**
 keyword.
 
 Debug Logging
@@ -56,8 +56,8 @@ Logging is also used for debug purposes.
         logging.Logger
 
     :value:
-        * *name* is *FP*
-        * *level* defaults to *logging.CRITICAL*
+        - **name** is ``FP``
+        - **level** defaults to **logging.CRITICAL**
 
 ..  data:: DEFAULT_FILE_HANDLER
 
@@ -65,27 +65,28 @@ Logging is also used for debug purposes.
         logging.FileHandler
 
     :value:
-        * *filename* is set to *fixedpoint.log* located in the same directory
-          as the source code
-        * *mode* is set to *'w'*
-        * *delay* is set to *True*, thus no file is generated (or overwritten)
+        - **filename** is set to ``fixedpoint.log`` located in the same
+          directory as the source code
+        - **mode** is set to ``'w'``
+        - **delay** is set to *True*, thus no file is generated (or overwritten)
           until logging is enabled with
           :meth:`fixedpoint.FixedPoint.enable_logging`
-        * *level* defaults to *logging.DEBUG*
+        - **level** defaults to **logging.DEBUG**
 
 The :data:`DEFAULT_FILE_HANDLER` is added to the :data:`LOGGER`.
 
-On initial import, :data:`LOGGER`\ 's level is set to *logging.CRITICAL*. Since
-no critical level logs are made within :mod:`fixedpoint`, it essentially
+On initial import, :data:`LOGGER`\ 's level is set to **logging.CRITICAL**.
+Since no critical level logs are made within :mod:`fixedpoint`, it essentially
 disables debug logging.
 
 ..  currentmodule:: fixedpoint
 
 When :meth:`.FixedPoint.enable_logging` is called,
-:data:`~fixedpoint.logging.LOGGER`\ 's level is set to *logging.DEBUG*.
+:data:`~fixedpoint.logging.LOGGER`\ 's level is set to **logging.DEBUG**.
 
 When :meth:`.FixedPoint.disable_logging` is called,
-:data:`~fixedpoint.logging.LOGGER`\ 's level is set back to *logging.CRITICAL*.
+:data:`~fixedpoint.logging.LOGGER`\ 's level is set back to
+**logging.CRITICAL**.
 
 *******************************************************************************
 Typing
@@ -109,6 +110,10 @@ Numpy Integration
 While not specifically tested, integration with |numpy|_ should be possible as
 long as unsupported operators (like ``@``, ``/``, ``//``, ``%``, etc.) are not
 used.
+
+..  todo::
+
+    Remove appropriate operators here
 
 Examples taken from the |convolve|_ documentation:
 

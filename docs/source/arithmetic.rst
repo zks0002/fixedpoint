@@ -36,7 +36,7 @@ full-precision; that is, there is always bit growth.
     +---------------------+---------------------+-----------------------------------+
 
 As indicated in the table, any combination of signed and unsigned numbers can
-be added together. The sum is only unsigned when both augend and added are
+be added together. The sum is only unsigned when both augend and addend are
 unsigned.
 
 Overflow is not possible using the addition operators.
@@ -163,8 +163,8 @@ full-precision; that is, there is always bit growth.
     +---------------------+---------------------+-----------------------------------+
 
 As indicated in the table, any combination of signed and unsigned numbers can
-be subtracted from each other. The difference is only unsigned when both augend
-and added are unsigned.
+be subtracted from each other. The difference is only unsigned when both minuend
+and subtrahend are unsigned.
 
 When signedness between minuend and subtrahend does not match, an extra integer
 bit is added to the unsigned term so it can be signed without overflowing.
@@ -272,11 +272,10 @@ Mixed Signedness
     >>> float(x)
     0.0
 
-Note that even though *u* and *s* can be represented without overflow in both
-*UQ2.0* and *Q2.0* formats (their difference can too), 2 bits are still added
-to the maximum integer bit width for the result. This makes for deterministic
-bit growth. Use :meth:`~.FixedPoint.clamp` or :meth:`~.FixedPoint.wrap` to
-revert back to the original Q format if needed.
+Note that even though **u** and **s** can be represented without overflow in
+both *UQ2.0* and *Q2.0* formats (their difference can too), 2 bits are still
+added to the maximum integer bit width for the result. This makes for
+deterministic bit growth.
 
 ..  doctest:: mixed signedness subtraction
     :skipif: should_skip("mixed signedness subtraction")
@@ -327,7 +326,7 @@ full-precision; that is, there is always bit growth.
     |                     |                     |                         |
     +---------------------+---------------------+-------------------------+
 
-Overflow is not possible using the multiplication operator.
+Overflow is not possible using the multiplication operators.
 
 Unsigned
 ===============================================================================
@@ -396,7 +395,7 @@ exponents are supported.
 ..  table:: Exponentiation Bit Growth Summary
 
     +-----------------+---------------+--------------------------------------------+
-    | Base            | Exponent      | Result                                     |
+    | Base            | Exponent (p)  | Result                                     |
     +=================+===============+=================+==========================+
     | | :math:`UQm.n` | | |Z+|        | :math:`UQx.y`   | | where                  |
     | | (unsigned)    | | (`int` > 0) |                 | | :math:`x = p \times m` |
@@ -541,13 +540,13 @@ To shift bits left and *not* lose bits, instead multiply the number by
 ..  doctest:: left shift
     :skipif: should_skip("left shift")
 
-    >>> float(x) * 2**4
+    >>> float(x) * 2**4 # expected result
     112.0
     >>> y = x << 4
-    >>> float(y), y.qformat
+    >>> float(y), y.qformat # significant bits are shifted away
     (0.0, 'UQ3.3')
 
-    >>> z = x * 2**4
+    >>> z = x * 2**4 # no loss of significant bits
     >>> float(z), z.qformat
     (112.0, 'UQ8.3')
 
@@ -600,15 +599,15 @@ If the number of bits to shift is negative, a left shift is performed instead.
 ..  doctest:: right shift
     :skipif: should_skip("right shift")
 
-    >>> x = FixedPoint(1, m=3)
+    >>> x = FixedPoint(1, m=3) # expected result
     >>> 2**-3 # Desired numerical value
     0.125
 
-    >>> y = x >> 3
+    >>> y = x >> 3 # significant bits are shifted away
     >>> float(y), y.qformat
     (0.0, 'UQ3.0')
 
-    >>> z = x * 2**-3
+    >>> z = x * 2**-3 # no loss of significant bits
     >>> float(z), z.qformat
     (0.125, 'UQ3.3')
 
@@ -618,9 +617,9 @@ AND, OR, XOR
 ===============================================================================
 
 The ``&``, ``&=``, ``|``, ``|=``, ``^``, and ``^=`` operators perform bitwise
-operations. A :class:`FixedPoint` is inter operable with an :obj:`int` or
-another :class:`FixedPoint`. In the latter case, the operand on the left will
-be the :ref:`Q format <Q_Format>` of the returned value.
+operations. A :class:`FixedPoint` is inter-operable with an `int` or another
+:class:`FixedPoint`. In the latter case, the operand on the left will be the
+:ref:`Q format <Q_Format>` of the returned value. Binary points are not aligned.
 
 ..  doctest:: bitwise 2 FixedPoints
     :skipif: should_skip("bitwise 2 FixedPoints")
@@ -671,7 +670,7 @@ When using an :obj:`int` as an operand, the operation is performed on the
     >>> float(a)
     0.375
 
-The order of  the operands is irrelevant.
+The order of the operands is irrelevant when one of them is an `int`.
 
 ..  doctest:: bitwise with int
     :skipif: should_skip("bitwise with int")
@@ -685,8 +684,8 @@ The order of  the operands is irrelevant.
     >>> float(b1), float(b2)
     (2.375, 2.375)
 
-The integer is masked to the the number of bits in the `FixedPoint` before
-performing the operation.
+The integer is masked to the the number of bits in the :class:`FixedPoint`
+before performing the operation.
 
 ..  doctest:: bitwise with int
     :skipif: should_skip("bitwise with int")

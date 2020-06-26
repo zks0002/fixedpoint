@@ -10,8 +10,8 @@ Initialization
 Initializing from a float
 *******************************************************************************
 
-When initializing a :class:`FixedPoint` from a `float`, *signed*, *m*, and *n*
-are all optional. Thus the following object instantiations are all valid:
+When initializing a :class:`FixedPoint` from a `float`, **signed**, **m**, and
+**n** are all optional. Thus the following object instantiations are all valid:
 
 ..  testsetup:: initializing from a float
     :skipif: should_skip("initializing from a float")
@@ -35,15 +35,14 @@ are all optional. Thus the following object instantiations are all valid:
     >>> float(c), c.qformat
     (8.271806125530277e-25, 'UQ10.80')
 
-..  |float issues| replace:: :pytut:`Issues and Limitations of Floating Point Arithmetic <floatingpoint.html>`
-
 ..  warning::
 
     Python's `float` type is typically implemented with 64-bit doubles,
     specified by `IEEE 754`_. This means that there's only 53 significant
     binary bits in a `float` (you can verify this by examining
     `sys.float_info`), and thus precision and resolution may be compromised in
-    certain circumstances. See The Python Tutorial on the |float issues|.
+    certain circumstances. See The Python Tutorial on the.
+    :pytut:`Issues and Limitations of Floating Point Arithmetic <floatingpoint.html>`.
 
 ..  doctest:: initializing from a float
     :skipif: should_skip("initializing from a float")
@@ -66,12 +65,13 @@ this method of representing :math:`\pi` suffers from inaccuracy.
 Initializing from an int
 *******************************************************************************
 
-When initializing a `FixedPoint` from an `int`, *signed*, *m*, and *n* are all
-optional. When *n* is left unspecified, it is guaranteed to be 0 (since integers
-never require fractional bits). When *m* is left unspecified,
-:meth:`FixedPoint.min_m` is used to deduce the number of integer bits needed to
-represent *init*, and after rounding occurs, :meth:`~.FixedPoint.trim` is used
-to remove superfluous leading 0s or sign-extended 1s.
+When initializing a :class:`FixedPoint` from an `int`, **signed**, **m**, and
+**n** are all optional. When **n** is left unspecified, it is guaranteed to be
+0 (since integers never require fractional bits). When **m** is left
+unspecified, :meth:`FixedPoint.min_m` is used to deduce the number of integer
+bits needed to represent **init**, and after rounding occurs,
+:meth:`~.FixedPoint.trim` is used to remove superfluous leading 0s or
+sign-extended 1s.
 
 ..  testsetup:: initializing from an int
     :skipif: should_skip("initializing from an int")
@@ -82,8 +82,8 @@ to remove superfluous leading 0s or sign-extended 1s.
     :skipif: should_skip("initializing from an int")
 
     >>> a = FixedPoint(-2**1000, n=42) # No signed or m argument
-    >>> a.qformat
-    'Q1001.42'
+    >>> a.qformat, float(a)
+    ('Q1001.42', -1.0715086071862673e+301)
 
     >>> b = FixedPoint(14, True, 10) # No n argument
     >>> b.qformat, float(b)
@@ -99,7 +99,7 @@ to remove superfluous leading 0s or sign-extended 1s.
 
     Python's `int` type has |unlimited precision| meaning it can be as large
     as you need it to be! In fact, the FixedPoint :attr:`~.FixedPoint.bits` are
-    stored internally as an *int*.
+    stored internally as an `int`.
 
 ..  _init_str:
 
@@ -107,8 +107,8 @@ to remove superfluous leading 0s or sign-extended 1s.
 Initializing from a str
 *******************************************************************************
 
-When initializing a `FixedPoint` from a `str`, *signed*, *m*, and *n* are
-required:
+When initializing a :class:`FixedPoint` from a `str`, **signed**, **m**, and
+**n** are required:
 
 ..  testsetup:: initializing from a str
     :skipif: should_skip("initializing from a str")
@@ -123,7 +123,7 @@ required:
         ...
     ValueError: String literal initialization Q format must be fully constrained.
 
-The string is converted to an *int* and this value is stored internally as the
+The string is converted to an `int` and this value is stored internally as the
 FixedPoint :attr:`~.FixedPoint.bits`. This means that leading 0s are ignored
 and not included in the total number of bits:
 
@@ -151,8 +151,8 @@ strings, respectively. If the radix is not present, it is considered a decimal
 number. This means if you have an integer that represents some known/desired
 :ref:`Q format <Q_Format>`, you can simply call :func:`bin`, :func:`oct`,
 :class:`str` or :func:`hex` to convert it to a *str*, then to a
-:class:`FixedPoint`. This method of initialization may be super useful in
-generating random stimulus:
+:class:`FixedPoint`. This method of initialization is useful in generating
+random stimulus:
 
 ..  doctest:: initializing from a str
     :skipif: should_skip("initializing from a str")
@@ -190,8 +190,8 @@ generating random stimulus:
 Initializing from another FixedPoint
 *******************************************************************************
 
-When initializing a `FixedPoint` from another `FixedPoint`, only *init* is
-required; all other arguments are ignored.
+When initializing a :class:`FixedPoint` from another :class:`FixedPoint`, only
+**init** is required; all other arguments are ignored.
 
 ..  testsetup:: initializing from a FixedPoint
     :skipif: should_skip("initializing from a FixedPoint")
@@ -215,8 +215,8 @@ required; all other arguments are ignored.
 Initializing from other types
 *******************************************************************************
 
-When *init* is not a(n) `float`, `int`, `str`, or `FixedPoint`, the object
-is cast to a *float*.
+When **init** is not a(n) `float`, `int`, `str`, or :class:`FixedPoint`, the
+object is cast to a `float`.
 
 ..  testsetup:: initializing from other types
     :skipif: should_skip("initializing from other types")
@@ -250,9 +250,9 @@ If this fails, a :exc:`TypeError` is raised.
 Initializers
 *******************************************************************************
 
-When the :ref:`Q format <Q_Format>` of a `FixedPoint` should stay the same, but
-a different value is needed, it is quicker to use one of the following
-*initializers* than generating a new `FixedPoint` object:
+When the :ref:`Q format <Q_Format>` of a :class:`FixedPoint` should stay the
+same, but a different value is needed, it is quicker to use one of the following
+*initializers* than generating a new :class:`FixedPoint` object:
 
 * :meth:`~.FixedPoint.from_float`
 * :meth:`~.FixedPoint.from_int`
@@ -336,14 +336,13 @@ each loop iteration:
     from fixedpoint import FixedPoint
     import random
 
-    # Q1.24
-    qformat = {'signed': True, 'm': 1, 'n': 24}
-
-    # A single instance
-    x = FixedPoint(0, **qformat)
+    # A single Q1.24 instance
+    m = 1
+    n = 24
+    x = FixedPoint(0, True, m, n)
 
     for i in range(10000):
-        x.from_string(hex(random.getrandbits(25)))
+        x.from_string(hex(random.getrandbits(m + n)))
 
         # Do stuff with x that doesn't change the Q format. If the Q format
         # is changed, you could use the context manager to restore the original
@@ -419,7 +418,7 @@ default ``'error'`` to allow processing to continue.
 ``'wrap'``
 ===============================================================================
 
-Wrapping will compute the full-length value and then mask away unspecified MSbs.
+Wrapping will compute the full-length value and then mask away superfluous MSbs.
 This is also called 2's complement overflow. The
 :attr:`~.FixedPoint.overflow_alert` property may need to be changed from the
 default ``'error'`` to allow processing to continue.
@@ -521,7 +520,7 @@ rounding scheme in the first row, the result is shown.
             print(divider)
 
 ..  table:: Rounding Scheme Summary
-    :widths: grid
+    :widths: auto
     :align: center
 
     +-------+------------+---------+------+----+-----+----+
@@ -609,7 +608,7 @@ can cause overflow.
         ...
     fixedpoint.FixedPointOverflowError: [SN2] 3.500000e+00 overflows in UQ2.0 format.
 
-    >>> z = FixedPoint(3.5, n=0, rounding='convergent') # Requires 4 integer bits
+    >>> z = FixedPoint(3.5, n=0, rounding='convergent') # Requires 3 integer bits
     >>> float(z), z.qformat
     (4.0, 'UQ3.0')
 
@@ -964,7 +963,7 @@ Overflow can occur in the following scenarios:
   * :ref:`out` (or using :meth:`~.FixedPoint.round_out`)
   * :ref:`up` (or using :meth:`~.FixedPoint.round_up`)
 
-Some methods that can cause overflow have an *alert* argument which can
+Some methods that can cause overflow have an **alert** argument which can
 change the notification scheme for the scope of the method. This can be used if
 overflow is expected.
 
@@ -1090,12 +1089,16 @@ For instance, what are the properties of ``c`` below?
 
     c = a + b
 
-FixedPoint uses the :class:`~fixedpoint.properties.PropertyResolver` class to
-resolve property mismatches for the following operations:
+:class:`FixedPoint`\ s use the :class:`~fixedpoint.properties.PropertyResolver`
+class to resolve property mismatches for the following operations:
 
     * addition (see :meth:`.FixedPoint.__add__`)
     * subtraction (see :meth:`.FixedPoint.__sub__`)
     * multiplication (see :meth:`.FixedPoint.__mul__`)
+
+..  todo::
+
+    Add operators here when appropriate.
 
 (in case you're curious, the example above produces the following):
 
@@ -1116,8 +1119,8 @@ resolve property mismatches for the following operations:
 ..  tip::
 
     You may consider starting out with :attr:`~.FixedPoint.mismatch_alert` set
-    to ``'error'``, just to make sure you understand the nuances of the
-    :class:`~.FixedPoint` class.
+    to ``'error'``, just to make sure you understand the nuances of property
+    resolution.
 
 ``'error'``
 ===============================================================================
@@ -1145,7 +1148,7 @@ a :exc:`MismatchError` exception.
         ...
     NameError: name 'c' is not defined
 
-If either `FixedPoint`\ 's :attr:`~.FixedPoint.mismatch_alert` is ``'error'``,
+If either `FixedPoint`\ s' :attr:`~.FixedPoint.mismatch_alert` is ``'error'``,
 then an exception is thrown. This is even the case if one of the settings is
 ``'ignore'`` (see the example below). When there are multiple mismatched
 properties the first mismatch encountered in the
@@ -1252,13 +1255,14 @@ The same examples from above are used.
 ``implicit_cast_alert``
 *******************************************************************************
 
-Arithmetic operations allow non-\ `FixedPoint`\ s as operands, and in such
-cases, are cast to a `FixedPoint` (see the :ref:`initialize_from_other_types`
-section) prior to operation. When a value is cast, its value is compared to the
-previous object, and if it doesn't exactly match, `FixedPoint` emits an alert.
-The ``implicit_cast_alert`` property indicates how you will be notified and if
-operation should be halted when implicit casting introduces error. You can
-choose from:
+Arithmetic operations allow non-\ :class:`FixedPoint`\ s as operands, and in
+such cases, are cast to a :class:`FixedPoint` (see the
+:ref:`initialize_from_other_types` section) prior to operation. The casted
+result is compared to it un-casted value, and if it doesn't exactly match, the
+original :class:`FixedPoint` emits an alert. The
+:attr:`~fixedpoint.FixedPoint.implicit_cast_alert` property indicates how you
+will be notified and if operation should be halted when implicit casting
+introduces error. You can choose from:
 
 * ``'error'``
 * ``'warning'`` (default if not specified)
@@ -1273,11 +1277,15 @@ choose from:
     examples in this section employ the same technique to illustrate
     functionality.
 
-Imiplicit cast alerts can conceivably be issued for the following operations:
+Implicit cast alerts can conceivably be issued for the following operations:
 
     * addition (see :meth:`.FixedPoint.__add__`)
     * subtraction (see :meth:`.FixedPoint.__sub__`)
     * multiplication (see :meth:`.FixedPoint.__mul__`)
+
+..  todo::
+
+    Add operators here when appropriate.
 
 ``'error'``
 ===============================================================================
@@ -1358,12 +1366,10 @@ ignored.
 *******************************************************************************
 
 When casting a :class:`FixedPoint` to a :class:`str`, the bits of the
-`FixedPoint` are displayed. Since the :attr:`~.FixedPoint.bits` are stored
-internally as an `int`, they are simply converted using :func:`bin`,
-:func:`oct`, :class:`str`, or :func:`hex` from the :meth:`~.FixedPoint.__str__`
-method. The ``str_base`` property indicates the base of the generated string.
-You can choose from:
-
+`FixedPoint` are displayed. The :attr:`~.FixedPoint.bits` are stored
+internally as an `int`, so conversion to various bases are straightforward
+using the :meth:`~.FixedPoint.__str__` method. The ``str_base`` property
+indicates the base of the generated string. You can choose from:
 
 * ``16`` (default if not specified)
 * ``10``
@@ -1373,9 +1379,9 @@ You can choose from:
 ``16``
 ===============================================================================
 
-Generates a hexadecimal string representative of :attr:`.FixedPoint.bits`. The
-string is sign extended (or 0-padded) to the bit width of the object, and does
-not include the radix.
+Generates a **hexadecimal** string representation of :attr:`.FixedPoint.bits`.
+The string is sign extended (or 0-padded) to the bit width of the object, and
+does not include the radix.
 
 ..  doctest:: str_base 16
     :skipif: should_skip("str_base 16")
@@ -1389,7 +1395,7 @@ not include the radix.
 ``10``
 ===============================================================================
 
-Generates a decimal string representative of :attr:`.FixedPoint.bits`. The
+Generates a **decimal** string representation of :attr:`.FixedPoint.bits`. The
 string is not sign extended to the bit width of the object, and does not
 include a radix. This is equivalent to ``str(FixedPoint(...).bits)``.
 
@@ -1409,7 +1415,7 @@ include a radix. This is equivalent to ``str(FixedPoint(...).bits)``.
 ``8``
 ===============================================================================
 
-Generates an octal string representative of :attr:`.FixedPoint.bits`. The
+Generates an **octal** string representation of :attr:`.FixedPoint.bits`. The
 string is sign extended (or 0-padded) to the bit width of the object, and does
 not include the radix.
 
@@ -1425,7 +1431,7 @@ not include the radix.
 ``2``
 ===============================================================================
 
-Generates a binary string representative of :attr:`.FixedPoint.bits`. The
+Generates a **binary** string representation of :attr:`.FixedPoint.bits`. The
 string is sign extended (or 0-padded) to the bit width of the object, and does
 not include the radix.
 

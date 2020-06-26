@@ -23,7 +23,7 @@ itself.
             Number of integer bits to resize to.
 
         :param int n:
-            Number of fractional bits to resize to
+            Number of fractional bits to resize to.
 
         :param str rounding:
             Temporary :attr:`~.FixedPoint.rounding` scheme to use.
@@ -41,8 +41,8 @@ itself.
             FixedPoint
 
         :raises FixedPointOverflowError:
-            if resizing causes overflow (raised only if *alert* - or
-            :attr:`~.FixedPoint.overflow_alert` if *alert* is not
+            if resizing causes overflow (raised only if **alert** - or
+            :attr:`~.FixedPoint.overflow_alert` if **alert** is not
             specified - is ``'error'``).
 
         Refer to :meth:`.FixedPoint.resize` for more details.
@@ -231,8 +231,8 @@ itself.
             FixedPoint
 
         :raises FixedPointOverflowError:
-            if rounding causes overflow (raised only if *alert* - or
-            :attr:`~.FixedPoint.overflow_alert` if *alert* is not
+            if rounding causes overflow (raised only if **alert** - or
+            :attr:`~.FixedPoint.overflow_alert` if **alert** is not
             specified - is ``'error'``)
 
         Refer to :meth:`.FixedPoint.keep_msbs` for more details.
@@ -250,7 +250,7 @@ itself.
         :param int m:
             Number of integer bits remaining after clamping
 
-        :param str alart:
+        :param str alert:
             Temporary :attr:`~.FixedPoint.overflow_alert` scheme to
             use. Can be keyworded.
 
@@ -259,8 +259,8 @@ itself.
 
         :raises FixedPointOverflowError:
             if reducing integer bit width causes overflow (raised only if
-            *alert* - or :attr:`~.FixedPoint.overflow_alert` if
-            *alert* is not specified - is ``'error'``)
+            **alert** - or :attr:`~.FixedPoint.overflow_alert` if
+            **alert** is not specified - is ``'error'``)
 
         Refer to :meth:`.FixedPoint.clamp` for more details.
 
@@ -277,7 +277,7 @@ itself.
         :param int m:
             Number of integer bits remaining after wrapping
 
-        :param str alart:
+        :param str alert:
             Temporary :attr:`~.FixedPoint.overflow_alert` scheme to
             use. Can be keyworded.
 
@@ -286,8 +286,8 @@ itself.
 
         :raises FixedPointOverflowError:
             if reducing integer bit width causes overflow (raised only if
-            *alert* - or :attr:`~.FixedPoint.overflow_alert` if
-            *alert* is not specified - is ``'error'``)
+            **alert** - or :attr:`~.FixedPoint.overflow_alert` if
+            **alert** is not specified - is ``'error'``)
 
         Refer to :meth:`.FixedPoint.wrap` for more details.
 
@@ -320,8 +320,8 @@ itself.
 
         :raises FixedPointOverflowError:
             if reducing integer bit width causes overflow (raised only if
-            *alert* - or :attr:`~.FixedPoint.overflow_alert` if
-            *alert* is not specified - is ``'error'``)
+            **alert** - or :attr:`~.FixedPoint.overflow_alert` if
+            **alert** is not specified - is ``'error'``)
 
         Refer to :meth:`.FixedPoint.keep_lsbs` for more details.
 

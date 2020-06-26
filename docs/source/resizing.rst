@@ -6,7 +6,7 @@ Bit Resizing
 
 ..  attention::
 
-    The code examples on this page change betwee the *function* version and the
+    The code examples on this page change between the *function* version and the
     *method* version of the resizing operation. For example, **y1**, and **y2**
     in the following example are equivalent, and **x** remains unchanged:
 
@@ -16,9 +16,9 @@ Bit Resizing
         >>> (x := FixedPoint(-1.5)).qformat
         'Q2.1'
         >>> y1 = FixedPoint(x)
-        >>> y1.resize(10, 10)
+        >>> y1.resize(10, 10) # resizes y1 directly
 
-        >>> y2 = resize(x, 10, 10)
+        >>> y2 = resize(x, 10, 10) # resizes a copy of x into y2
 
         >>> print(f'{x.qformat=}\n{y1.qformat=}\n{y2.qformat=}')
         x.qformat='Q2.1'
@@ -73,7 +73,7 @@ sign-extend:
 ..  doctest:: resize
     :skipif: should_skip("resize")
 
-    >>> x = resize(neg_signed, 7, 2)
+    >>> x = resize(neg_signed, 7, 2) # resize Q4.2 to Q7.2
     >>> show(x)
     -2.00   Q7.2  111_1110.00
 
@@ -83,11 +83,11 @@ unsigned) will pad with zeros:
 ..  doctest:: resize
     :skipif: should_skip("resize")
 
-    >>> x = resize(pos_signed, 7, 2)
+    >>> x = resize(pos_signed, 7, 2) # resize Q4.2 to Q7.2
     >>> show(x)
     +2.00   Q7.2  000_0010.00
 
-    >>> y = resize(pos_unsigned, 7, 2)
+    >>> y = resize(pos_unsigned, 7, 2) # resize UQ4.2 to UQ7.2
     >>> show(y)
     +2.00  UQ7.2  000_0010.00
 
@@ -99,13 +99,13 @@ or unsigned) :class:`FixedPoint` will pad with zeros:
 ..  doctest:: resize
     :skipif: should_skip("resize")
 
-    >>> show(resize(neg_signed, 4, 5))
+    >>> show(resize(neg_signed, 4, 5)) # resize Q2.2 to Q4.5
     -2.00   Q4.5  1110.0_0000
 
-    >>> show(resize(pos_signed, 4, 5))
+    >>> show(resize(pos_signed, 4, 5)) # resize Q2.2 to Q4.5
     +2.00   Q4.5  0010.0_0000
 
-    >>> show(resize(pos_unsigned, 4, 5))
+    >>> show(resize(pos_unsigned, 4, 5)) # resize UQ2.2 to UQ4.5
     +2.00  UQ4.5  0010.0_0000
 
 Decreasing the integer bit width below the minimum number of bits required to
@@ -120,16 +120,16 @@ represent it will result in overflow:
 ..  doctest:: resize
     :skipif: should_skip("resize")
 
-    >>> neg_signed.resize(1, 5)
+    >>> neg_signed.resize(1, 5) # resize Q2.2 to Q1.5
     Traceback (most recent call last):
         ...
     fixedpoint.FixedPointOverflowError: [SN1] Overflow in format Q4.5.
 
-Override the :attr:`~.FixedPoint.overflow_alert` property by setting the *alert*
-argument to the desired alert level. Override the :attr:`~.FixedPoint.overflow`
-property by setting the *overflow* argument. These overrides only take effect
-inside the function/method; the original property setting is restored after
-resizing.
+Override the :attr:`~.FixedPoint.overflow_alert` property by setting the
+**alert** argument to the desired alert level. Override the
+:attr:`~.FixedPoint.overflow` property by setting the **overflow** argument.
+These overrides only take effect inside the function/method; the original
+property setting is restored after resizing (or an exception).
 
 ..  doctest:: resize
     :skipif: should_skip("resize")
@@ -149,7 +149,7 @@ resizing.
 
 Decreasing the fractional bit width below the minimum number of bits required
 to represent it will result in rounding. Override the
-:attr:`~.FixedPoint.rounding` property by setting the *rounding* argument.
+:attr:`~.FixedPoint.rounding` property by setting the **rounding** argument.
 This override only takes effect inside the function/method; the original
 property setting is restored after resizing.
 
@@ -255,8 +255,8 @@ insignificant bits.
     >>> show(trim(pos_unsigned))
     +2.00  UQ2.0  10.
 
-You can opt to trim off only fractional or integer bits by setting *fracs* or
-*int*, respectively, to *True*.
+You can opt to trim off only fractional or integer bits by setting **fracs** or
+**ints**, respectively, to *True*.
 
 ..  doctest:: trim
     :skipif: should_skip("trim")
@@ -302,7 +302,7 @@ Rounding
 *******************************************************************************
 
 See the :ref:`Initialization <rounding>` page for numerical examples on various
-rounding schemes. The items described here warrant more information than what
+rounding schemes. The items described here provide more information than what
 those examples show.
 
 ..  _default_rounding:
@@ -335,11 +335,11 @@ the inherent rounding scheme.
     >>> show(x)
     +0.33  UQ0.24  .0101_0101_0101_0101_0101_0101
 
-    >>> show(round(x, 4))
+    >>> show(round(x, 4)) # uses 'nearest' rounding
     +0.31  UQ0.4  .0101
 
     >>> x.rounding = 'up'
-    >>> x.round(7)
+    >>> x.round(7) # uses 'up' rounding
     >>> show(x)
     +0.34  UQ0.7  .010_1011
 
@@ -350,7 +350,7 @@ Additionally, when shrinking the fractional bit width (via
     :skipif: should_skip("default rounding")
 
     >>> x.rounding = 'in'
-    >>> x.n = 3
+    >>> x.n = 3 # uses 'in' rounding
     >>> show(x)
     +0.25  UQ0.3  .010
 
@@ -358,9 +358,6 @@ Additionally, when shrinking the fractional bit width (via
 
 :func:`math.floor`
 ===============================================================================
-
-When given a :class:`float`, :func:`math.floor` will round towards
-:math:`-\infty` and return an :class:`int` type.
 
 ..  testsetup:: resize math.floor
     :skipif: should_skip("resize math.floor")
@@ -372,21 +369,8 @@ When given a :class:`float`, :func:`math.floor` will round towards
         print(f"{A:0{A.m+(A.m-1)//4}_bm}." if A.m else ".", end="")
         print(f"{A:0{A.n+(A.n-1)//4}_bn}" if A.n else "") # Show binary point
 
-..  doctest:: resize math.floor
-    :skipif: should_skip("resize math.floor")
-
-    >>> import math
-    >>> x = math.floor(1/3)
-    >>> x, type(x)
-    (0, <class 'int'>)
-
-    >>> y = math.floor(-1/2)
-    >>> y, type(y)
-    (-1, <class 'int'>)
-
-Using :func:`math.floor` on a :class:`FixedPoint` will produce the same result,
-but will not modify the fractional bit width. It simply sets all fractional
-bits to 0.
+Using :func:`math.floor` on a :class:`FixedPoint` will not change the fractional
+bit width, but will set all fractional bits to 0.
 
 ..  doctest:: resize math.floor
     :skipif: should_skip("resize math.floor")
@@ -413,9 +397,6 @@ the same thing as :func:`math.floor` if importing :mod:`math` is not desired.
 :func:`math.ceil`
 ===============================================================================
 
-When given a :class:`float`, :func:`math.ceil` will round towards
-:math:`+\infty` and return an :class:`int` type.
-
 ..  testsetup:: resize math.ceil
     :skipif: should_skip("resize math.ceil")
 
@@ -426,20 +407,10 @@ When given a :class:`float`, :func:`math.ceil` will round towards
         print(f"{A:0{A.m+(A.m-1)//4}_bm}." if A.m else ".", end="")
         print(f"{A:0{A.n+(A.n-1)//4}_bn}" if A.n else "") # Show binary point
 
-..  doctest:: resize math.ceil
-    :skipif: should_skip("resize math.ceil")
-
-    >>> import math
-    >>> x = math.ceil(1/3)
-    >>> x, type(x)
-    (1, <class 'int'>)
-
-    >>> y = math.ceil(-1/2)
-    >>> y, type(y)
-    (0, <class 'int'>)
-
-Using :func:`math.ceil` on a :class:`FixedPoint` produces the same result.
-Note that this can cause :ref:`overflow <overflow>`.
+Using :func:`math.ceil` on a :class:`FixedPoint` will remove all fractional bits
+and increment the integer portion if the fractional portion was non-zero. Since
+the integer bit width remains the same, this can cause some strange
+:ref:`overflow <overflow>` behavior.
 
 ..  doctest:: resize math.ceil
     :skipif: should_skip("resize math.ceil")
@@ -472,9 +443,6 @@ no integer bits will raise an exception.
 :func:`math.trunc`
 ===============================================================================
 
-When given a :class:`float`, :func:`math.trunc` will round towards 0
-(truncating decimal digits) and return an :class:`int` type.
-
 ..  testsetup:: resize math.trunc
     :skipif: should_skip("resize math.trunc")
 
@@ -485,23 +453,11 @@ When given a :class:`float`, :func:`math.trunc` will round towards 0
         print(f"{A:0{A.m+(A.m-1)//4}_bm}." if A.m else ".", end="")
         print(f"{A:0{A.n+(A.n-1)//4}_bn}" if A.n else "") # Show binary point
 
-..  doctest:: resize math.trunc
-    :skipif: should_skip("resize math.trunc")
-
-    >>> import math
-    >>> x = math.trunc(0.333333333333333333)
-    >>> x, type(x)
-    (0, <class 'int'>)
-
-    >>> y = math.trunc(-0.5)
-    >>> y, type(y)
-    (0, <class 'int'>)
-
 The *truncation* that :func:`math.trunc` performs on :class:`float`\ s is the
 truncation of **decimal** digits. For :class:`FixedPoint`\ s, **binary** digits
 are truncated, effectively *flooring* the number. Thus the only difference
-between :func:`math.floor` and :func:`math.trunc` is that the latter leaves no
-fractional bits in the return value.
+between :func:`math.floor` and :func:`math.trunc` for :class:`FixedPoint`\ s is
+that the latter leaves no fractional bits in the return value.
 
 ..  attention::
 
@@ -615,7 +571,7 @@ Overflow Handling
 *******************************************************************************
 
 See the :ref:`Initialization <overflow>` page for numerical examples on various
-overflow handling schemes. The items described here warrant more information
+overflow handling schemes. The items described here provide more information
 than what those examples show.
 
 ..  _keep_lsbs:
@@ -623,10 +579,10 @@ than what those examples show.
 Clamping/wrapping below 0 integer bits
 ===============================================================================
 
-There may be times when you want to remove MSbs and still perform clamping (
-e.g. keep the least significant 18 bits of a Q18.24 number but clamp/wrap the
-entire value). This can be done with the :meth:`.FixedPoint.keep_lsbs` or
-:func:`.keep_lsbs`.
+There may be times when you want to remove more MSbs than the current integer
+bit width and still perform clamping (e.g. keep the least significant 18 bits
+of a Q18.24 number but clamp/wrap the entire value). This can be done with the
+:meth:`.FixedPoint.keep_lsbs` or :func:`.keep_lsbs`.
 
 ..  doctest:: resizing with keep_lsbs
     :skipif: should_skip("resizing with keep_lsbs")

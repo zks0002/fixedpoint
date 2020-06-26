@@ -35,7 +35,7 @@ Table of Contents
     :caption: Definitions
 
     basics
-    FixedPointclass
+    FixedPoint
     FixedPointBits
     PropertyResolver
     functions
