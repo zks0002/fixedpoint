@@ -201,6 +201,21 @@ The **FixedPoint** Class
 
     ..  rubric:: FixedPoint Properties
 
+    ..  attribute:: CALLBACK
+
+        :type:
+            dict[str, callable]
+
+        User-defined :meth:`__truediv__` and :meth:`__matmul__` implementations.
+        By default, this is initialized as
+
+        ``CALLBACK = {'/': None, '@': None}``
+
+        indicating that the ``/`` and ``@`` operators are undefined. The
+        signature of the
+
+
+
     ..  attribute:: signed
 
         :type:
@@ -645,6 +660,76 @@ The **FixedPoint** Class
             :class: example
 
             * :ref:`arithmetic_multiplication`
+
+    ..  method:: __truediv__(divisor)
+                 __itruediv__(divisor)
+                 __rtruediv__(dividend)
+
+        ..  note::
+
+            These are the ``/`` and ``/=`` operators.
+
+        :param divisor:
+            denominator term
+
+        :type divisor:
+            FixedPoint or int or float
+
+        :param dividend:
+            numerator term
+
+        :type dividend:
+            FixedPoint or int or float
+
+        :return:
+            *quotient* of *dividend* and *divisor*
+
+        :rtype:
+            FixedPoint
+
+        :raises ImplicitCastError:
+            if the **dividend** or **divisor** argument cannot be cast to a
+            :class:`FixedPoint` without error.
+
+        :raises MismatchError:
+            if any **dividend** or **divisor** properties do not match, and
+            either of their :attr:`~.FixedPoint.mismatch_alert` properties is
+            ``'error'``.
+
+        ..  note::
+
+            :math:`\it{quotient} = \frac{\it{dividend}}{\it{divisor}}`
+
+        Since division is not a bounded operation (e.g., 1/3 is not exactly
+        representable in binary, and doing long division on this would continue
+        forever...), the ``/`` and ``/=`` operators are implemented with a
+        user-defined callback. The user provides the :class:`FixedPoint` class
+        with their own division function which is invoked when the ``/`` or
+        ``/=`` operator is used.
+
+        The callback signature is:
+
+        ``callback(dividend, divisor, properties) -> FixedPoint``
+
+        - **dividend** is a :class:`FixedPoint`, the numerator of the operation
+        - **divisor** is a :class:`FixedPoint`, the denominator of the operation
+        - **properties** is a `dict`, with keys being the name of the property,
+          and the values being the property value (all are `str` except the
+          ``str_base`` value, which is an `int`). Prior to invoking the
+          callback, the properties are resolved using
+          :meth:`fixedpoint.properties.PropertyResolver.all` and provided to
+          the callback so those properties can be assigned to the quotient.
+        - The quotient is the return value, which is also a :class:`FixedPoint`
+          object.
+
+        ..  todo::
+
+            Add link to examples
+
+        ..  admonition:: Jump to Examples
+            :class: example
+
+            * :ref:`need an example here`
 
     ..  method:: __pow__(exponent)
                  __ipow__(exponent)

@@ -17,7 +17,8 @@ FixedPointType = TypeVar("FixedPointType", bound="FixedPoint")
 Numeric = Union[FixedPointType, int, float]
 Integral = Union[FixedPointType, int, bool]
 AttrReturn = Tuple[int, bool, int, int]
-OperatorCallback = Callable[[FixedPointType, FixedPointType], FixedPointType]
+OperatorCallback = Callable[[FixedPointType, FixedPointType, ResolvedProps],
+                            FixedPointType]
 _MAXEXPONENT = max(abs(sys.float_info.max_exp), abs(sys.float_info.min_exp))
 
 
@@ -807,24 +808,25 @@ class FixedPoint:
         if (func := self.__class__.CALLBACK.get('/', None)) is None:
             return NotImplemented  # type: ignore
         divisor, props = self.__to_FixedPoint_resolved(other)
-        return func(self, divisor)  # type: ignore
+        return func(self, divisor, props)  # type: ignore
 
     def __rtruediv__(self: FixedPointType, other: Numeric) -> FixedPointType:
         """User-defined true division operator."""
         if (func := self.__class__.CALLBACK.get('/', None)) is None:
             return NotImplemented  # type: ignore
         dividend = self.__to_FixedPoint(other)
-        for attr in PROPERTIES:
-            attribute = f"_{attr}"
-            setattr(dividend, attribute, getattr(self, attribute))
-        return func(dividend, self)  # type: ignore
+        props = self.__class__._RESOLVE.all(self)
+        for prop, setting in props.items():
+            dividend.__class__.__dict__[prop].fset(setting)
+        return func(dividend, self, props)  # type: ignore
 
     def __itruediv__(self: FixedPointType, other: Numeric) -> FixedPointType:
         """User-defined true division operator."""
         if (func := self.__class__.CALLBACK.get('/', None)) is None:
             return NotImplemented  # type: ignore
-        divisor, props = self.__to_FixedPoint_resolved(other)
-        newself = func(self, divisor)
+        divisor, _ = self.__to_FixedPoint_resolved(other)
+        props = self.__class__._RESOLVE.all(self)
+        newself = func(self, divisor, props)
         for attr in self.__slots__:
             if not attr.startswith('__'):
                 setattr(self, attr, getattr(newself, attr))
